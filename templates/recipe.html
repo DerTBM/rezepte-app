@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ rezept.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+    <section class="hero" style="background-color: {{ rezept.theme.farbe }};">
+        <div class="hero-body">
+            <h1 class="title is-2"> {{ rezept.title }} </h1>
+            <p class="subtitle">
+                {{ rezept.portion }} Portionen · {{ rezept.time }}
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <figure class="image">
+            <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
+        </figure>
+        <div class="columns">
+            <div class="column is-half">
+                <h2 class="title is-4">Zutaten</h2>
+                <ul>
+                    {% for zutat in rezept.zutaten %}
+                    <li>{{ zutat.menge }} {{ zutat.einheit.value }} {{ zutat.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="tags">
+            {% for kat in rezept.kategorien %}
+            <span class="tag is-medium">{{ kat.name }}</span>
+            {% endfor %}
+        </div>
+    </section>
+</body>
+</html>

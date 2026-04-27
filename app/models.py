@@ -45,32 +45,32 @@ class Rezept: # Ans Ende weil Python von oben nach unten liest und erst Zutat, S
     bild: str
 
 KATEGORIEN = [
-    Kategorie(name="Abendessen", farbe="#fff"),
-    Kategorie(name="Schwein", farbe="#fff"),
-    Kategorie(name="Rind", farbe="#fff"),
-    Kategorie(name="Geflügel", farbe="#fff"),
-    Kategorie(name="Sonstiges Fleisch", farbe="#fff"),
-    Kategorie(name="Fisch", farbe="#fff"),
-    Kategorie(name="Vegan/Vegetarisch", farbe="#99cb38"),
-    Kategorie(name="Desserts & Getränke", farbe="#fff"),
-    Kategorie(name="Kuchen & Torten", farbe="#fff"),
-    Kategorie(name="Festtagsessen", farbe="#fff"),
-    Kategorie(name="Sous Vide", farbe="#fff"),
+    Kategorie(name="Abendessen", farbe="#a594a8"),
+    Kategorie(name="Schwein", farbe="#f3c3d2"),
+    Kategorie(name="Rind", farbe="#f99374"),
+    Kategorie(name="Geflügel", farbe="#cbe0ed"),
+    Kategorie(name="Sonstiges Fleisch", farbe="#539da3"),
+    Kategorie(name="Fisch", farbe="#3ea1ce"),
+    Kategorie(name="Vegan/Vegetarisch", farbe="#6aa93e"),
+    Kategorie(name="Desserts & Getränke", farbe="#e7aede"),
+    Kategorie(name="Kuchen & Torten", farbe="#cc8335"),
+    Kategorie(name="Festtagsessen", farbe="#ca1103"),
+    Kategorie(name="Sous Vide", farbe="#ffffff"),
 ]
 
 THEMES = [
-    Theme(name="Abendessen", farbe="#fff"),
-    Theme(name="Schwein", farbe="#fff"),
-    Theme(name="Rind", farbe="#fff"),
-    Theme(name="Geflügel", farbe="#fff"),
-    Theme(name="Sonstiges Fleisch", farbe="#fff"),
-    Theme(name="Fisch", farbe="#fff"),
-    Theme(name="Vegan/Vegetarisch", farbe="#99cb38"),
-    Theme(name="Desserts & Getränke", farbe="#fff"),
-    Theme(name="Kuchen & Torten", farbe="#fff"),
-    Theme(name="Ostern", farbe="#fff"),
-    Theme(name="Weihnachten", farbe="#fff"),
-    Theme(name="Special", farbe="#fff"),
+    Theme(name="Abendessen", farbe="#a594a8"),
+    Theme(name="Schwein", farbe="#f3c3d2"),
+    Theme(name="Rind", farbe="#f99374"),
+    Theme(name="Geflügel", farbe="#cbe0ed"),
+    Theme(name="Sonstiges Fleisch", farbe="#539da3"),
+    Theme(name="Fisch", farbe="#3ea1ce"),
+    Theme(name="Vegan/Vegetarisch", farbe="#6aa93e"),
+    Theme(name="Desserts & Getränke", farbe="#e7aede"),
+    Theme(name="Kuchen & Torten", farbe="#cc8335"),
+    Theme(name="Ostern", farbe="#99cb38"),
+    Theme(name="Weihnachten", farbe="#ca1103"),
+    Theme(name="Special", farbe="#8e19fe"),
 ]
 
 def get_kategorie(name: str) -> Kategorie:
@@ -85,8 +85,8 @@ def get_theme(name: str) -> Theme:
             return t
     raise ValueError(f"Theme '{name}' nicht gefunden")
 
-# Test: Rezept im Speicher konstruieren
-ofgy = Rezept(
+def build_ofgy() -> Rezept:
+    return Rezept(
     title="Ofengyros",
     is_fav=True,
     time="40 Minuten",
@@ -105,6 +105,7 @@ ofgy = Rezept(
     portion=2,
     bild="ofgy.jpg",
 )
+    
 
-print(ofgy)
-print(ofgy.kategorien)
+if __name__ == "__main__":
+    print(build_ofgy())
