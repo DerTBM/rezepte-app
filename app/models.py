@@ -36,12 +36,12 @@ class Zutat:
 class Rezept: # Ans Ende weil Python von oben nach unten liest und erst Zutat, Schritt, Kategorie braucht
     title: str
     is_fav: bool
-    time: str
+    zubereitungszeit: str
     zutaten: list[Zutat] # Eine Liste von Zutat-Objekten
     schritte: list[Schritt] # Eine Liste von Schritt-Objekten
     kategorien: list[Kategorie] # Eine Liste von Kategorie-Objekten, Plural weil Multi-Select
     theme: Theme
-    portion: int
+    portionen: int
     bild: str
 
 KATEGORIEN = [
@@ -89,7 +89,7 @@ def build_ofgy() -> Rezept:
     return Rezept(
     title="Ofengyros",
     is_fav=True,
-    time="40 Minuten",
+    zubereitungszeit="40 Minuten",
     zutaten=[
         Zutat(name="Kartoffeln", menge=200, einheit=Einheit.GRAMM),
         Zutat(name="Gyros", menge=402, einheit=Einheit.GRAMM),
@@ -102,7 +102,7 @@ def build_ofgy() -> Rezept:
     ],
     kategorien=[get_kategorie("Abendessen"), get_kategorie("Schwein")],  # Sollte Abendessen und Schwein sein
     theme=get_theme("Abendessen"),              # Sollte Abendessen sein
-    portion=2,
+    portionen=2,
     bild="ofgy.jpg",
 )
     

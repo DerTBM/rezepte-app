@@ -2,8 +2,8 @@
 CREATE TABLE rezept (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    portion INT NOT NULL DEFAULT 2,
-    time VARCHAR(100),
+    portionen INT NOT NULL DEFAULT 2,
+    zubereitungszeit VARCHAR(100),
     bild VARCHAR(255),
     is_fav BOOLEAN NOT NULL DEFAULT FALSE,
     theme VARCHAR(50) NOT NULL DEFAULT 'Standard',
