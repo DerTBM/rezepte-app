@@ -19,15 +19,40 @@ mariadb -u root -p rezepte < schema.sql
 
 ## Aktueller Stand
 
-- Datenmodell vollständig (app/models.py)
-- FastAPI-Server mit JSON- und HTML-Endpunkt
-- Bulma als CSS-Framework
-- DB-Schema in schema.sql, noch nicht in Python angebunden
+- Datenmodell mit dataclasses (app/models.py)
+- ORM-Modelle mit SQLAlchemy (app/db_models.py)
+- DB-Schema in schema.sql
+- FastAPI mit /rezepte/{id}-Route, lädt aus MariaDB und rendert HTML
+- Bulma-Styling, Theme-Farben pro Rezept
+- Seed-Skript: `python -m app.seed`
 
 ## Nächste Schritte
 
-- Python-Anbindung an MariaDB (SQLAlchemy)
-- CRUD-Operationen für Rezepte
+- CRUD Create/Update/Delete (Anlegen/Editieren/Löschen über UI)
 - Bildupload
+- Kategorie- und Theme-Verwaltung im Frontend
 - Deployment
 
+## Setup zuhause
+
+1. Repository klonen
+2. Virtual Environment:
+```python
+-m venv .venv
+..venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+3. MariaDB installieren, Datenbank `rezepte` anlegen
+4. `.env.example` zu `.env` kopieren, Passwort eintragen
+5. Schema einlesen:
+```
+mariadb -u root -p rezepte < schema.sql
+```
+6. Test-Daten einfüllen:
+```
+python -m app.seed
+```
+7. Server starten:
+```
+uvicorn app.main:app --reload
+```

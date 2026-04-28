@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass
 
+# HIER SIND REINE DATACLASSES DRIN
 # Erst die primitiven Klassen
 @dataclass
 class Schritt:
