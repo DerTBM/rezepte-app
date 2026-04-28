@@ -1,6 +1,6 @@
 # Rezepte-App
 
-Self-hosted Web-App für Familienrezepte. Aktuell in Entwicklung.
+Self-hosted Web-App für Familienrezepte. WIP.
 
 ## Setup
 

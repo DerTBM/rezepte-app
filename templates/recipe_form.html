@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Neues Rezept</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <h1 class="title">Neues Rezept anlegen</h1>
+<form method="post" action="/rezepte/neu">
+    <!-- Bestehende Felder -->
+    <div class="field">
+        <label class="label">Titel</label>
+        <div class="control">
+            <input class="input" type="text" name="title" required>
+        </div>
+    </div>
+    
+    <div class="field">
+        <label class="label">Portionen</label>
+        <div class="control">
+            <input class="input" type="number" name="portionen" value="2" min="1" required>
+        </div>
+    </div>
+    
+    <div class="field">
+        <label class="label">Zubereitungszeit</label>
+        <div class="control">
+            <input class="input" type="text" name="zubereitungszeit" placeholder="z.B. 40 Minuten">
+        </div>
+    </div>
+    
+    <div class="field">
+        <label class="label">Theme</label>
+        <div class="control">
+            <div class="select">
+                <select name="theme">
+                    <option value="Standard">Standard</option>
+                    <option value="Abendessen">Abendessen</option>
+                    <option value="Vegan/Vegetarisch">Vegan</option>
+                    <option value="Festtagsessen">Festtagsessen</option>
+                    <option value="Weihnachten">Weihnachten</option>
+                    <option value="Ostern">Ostern</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Neu: Zutaten -->
+    <h2 class="subtitle mt-5">Zutaten</h2>
+    <div id="zutaten-container">
+        <!-- Wird dynamisch befüllt -->
+    </div>
+    <button type="button" class="button is-light mb-4" onclick="addZutat()">+ Zutat hinzufügen</button>
+    
+    <!-- Neu: Schritte -->
+    <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
+    <div id="schritte-container">
+        <!-- Wird dynamisch befüllt -->
+    </div>
+    <button type="button" class="button is-light mb-4" onclick="addSchritt()">+ Schritt hinzufügen</button>
+    
+    <!-- Submit -->
+    <div class="field mt-5">
+        <div class="control">
+            <button type="submit" class="button is-primary">Speichern</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    function addZutat() {
+        const container = document.getElementById('zutaten-container');
+        const div = document.createElement('div');
+        div.className = 'field is-grouped mb-2';
+        div.innerHTML = `
+            <div class="control">
+                <input class="input" type="number" name="zutat_menge" placeholder="Menge" step="0.1" required>
+            </div>
+            <div class="control">
+                <div class="select">
+                    <select name="zutat_einheit" required>
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ml">ml</option>
+                        <option value="l">l</option>
+                        <option value="EL">EL</option>
+                        <option value="TL">TL</option>
+                        <option value="Stk">Stk</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control is-expanded">
+                <input class="input" type="text" name="zutat_name" placeholder="Zutat" required>
+            </div>
+            <div class="control">
+                <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+    
+    function addSchritt() {
+        const container = document.getElementById('schritte-container');
+        const div = document.createElement('div');
+        div.className = 'field is-grouped mb-2';
+        div.innerHTML = `
+            <div class="control is-expanded">
+                <input class="input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
+            </div>
+            <div class="control">
+                <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+    
+    // Beim Laden: eine leere Zeile pro Bereich
+    addZutat();
+    addSchritt();
+</script>
+    </section>
+</body>
+</html>
