@@ -6,16 +6,17 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.crud import get_rezept
 from fastapi import HTTPException
-from fastapi import Depends 
+from fastapi import Depends
 from fastapi import Form
 from fastapi.responses import RedirectResponse
-from typing import List 
+from typing import List
 from app.db_models import Rezept, Zutat, Schritt
 from app.models import Einheit
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 def get_db():
     """Stellt eine DB-Session bereit, schließt sie nach dem Request."""
@@ -25,11 +26,14 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/rezepte/neu", response_class=HTMLResponse) # Muss vor Rezept_ID registriert sein, sonst interpretiert FastAPI neu als ID und versucht einen Integer draus zu machen
+
+# Muss vor Rezept_ID registriert sein, sonst interpretiert FastAPI neu als ID und versucht einen Integer draus zu machen
+@app.get("/rezepte/neu", response_class=HTMLResponse)
 def rezepte_neu_form(request: Request):
     return templates.TemplateResponse(
         request, "recipe_form.html", {}
     )
+
 
 @app.post("/rezepte/neu")
 def rezept_neu_speichern(
@@ -55,8 +59,8 @@ def rezept_neu_speichern(
     # Zutaten zusammenbauen
     for i, (menge, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
         if not name.strip():
-            continue # Leere Zeile überspringen
-        einheit = Einheit(einheit_str) #String -> Enum
+            continue  # Leere Zeile überspringen
+        einheit = Einheit(einheit_str)  # String -> Enum
         zutat = Zutat(name=name, menge=menge, einheit=einheit, position=i)
         neues_rezept.zutaten.append(zutat)
 
@@ -74,6 +78,8 @@ def rezept_neu_speichern(
     return RedirectResponse(url=f"/rezepte/{neues_rezept.id}", status_code=303)
 
 # Rezept HTML-Seite
+
+
 @app.get("/rezepte/{rezept_id}", response_class=HTMLResponse)
 def rezept_html(rezept_id: int, request: Request, db: Session = Depends(get_db)):
     rezept = get_rezept(db, rezept_id)
@@ -94,6 +100,7 @@ def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url="/", status_code=303)
 
+
 @app.get("/", response_class=HTMLResponse)
 def landing(request: Request, db: Session = Depends(get_db)):
     from app.crud import get_alle_rezepte
@@ -102,3 +109,60 @@ def landing(request: Request, db: Session = Depends(get_db)):
         request, "landing.html", {"rezepte": rezepte}
     )
 
+
+@app.get("/rezepte/{rezept_id}/edit", response_class=HTMLResponse)
+def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get_db)):
+    rezept = get_rezept(db, rezept_id)
+    if rezept is None:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+    return templates.TemplateResponse(
+        request, "recipe_edit.html", {"rezept": rezept}
+    )
+
+
+@app.post("/rezepte/{rezept_id}/edit")
+def rezept_edit_speichern(
+    rezept_id: int,
+    title: str = Form(...),
+    portionen: int = Form(...),
+    zubereitungszeit: str = Form(""),
+    theme: str = Form("Standard"),
+    zutat_menge: List[float] = Form([]),
+    zutat_einheit: List[str] = Form([]),
+    zutat_name: List[str] = Form([]),
+    schritt_text: List[str] = Form([]),
+    db: Session = Depends(get_db),
+):
+    rezept = db.get(Rezept, rezept_id)
+    if rezept is None:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+
+
+    # Hauptdaten updaten
+    rezept.title = title
+    rezept.portionen = portionen
+    rezept.zubereitungszeit = zubereitungszeit
+    rezept.theme = theme
+
+    # Replace-All: Alte Zutateten und Schritte be gone
+    rezept.zutaten.clear()
+    rezept.schritte.clear()
+
+    # Neue Zutaten anlegen
+    for i, (menge, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
+        if not name.strip():
+            continue
+        einheit = Einheit(einheit_str)
+        zutat = Zutat(name=name, menge=menge, einheit=einheit, position=i)
+        rezept.zutaten.append(zutat)
+
+    # Neue Schritte anlegen
+    for i, text in enumerate(schritt_text):
+        if not text.strip():
+            continue
+        schritt = Schritt(text=text, position=i)
+        rezept.schritte.append(schritt)
+
+    db.commit()
+
+    return RedirectResponse(url=f"/rezepte/{rezept_id}", status_code=303)

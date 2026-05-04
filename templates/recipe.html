@@ -38,14 +38,18 @@
             <span class="tag is-medium">{{ kat.name }}</span>
             {% endfor %}
         </div>
-
-        # Delete Button
+        <!-- Edit Button -->
+         <a href="/rezepte/{{ rezept.id }}/edit" class="button is-warning is-small">
+            Bearbeiten
+         </a>
+        <!-- Delete Button -->
         <form method="post" action="/rezepte/{{ rezept.id }}/loeschen"
             onsubmit="return confirm('Rezept wirklich löschen?');">
             <button type="submit" class="button is-danger is-small">
                 Rezept löschen
             </button>
         </form>
+
     </section>
 </body>
 </html>
