@@ -73,6 +73,7 @@ def rezept_neu_speichern(
 
     return RedirectResponse(url=f"/rezepte/{neues_rezept.id}", status_code=303)
 
+# Rezept HTML-Seite
 @app.get("/rezepte/{rezept_id}", response_class=HTMLResponse)
 def rezept_html(rezept_id: int, request: Request, db: Session = Depends(get_db)):
     rezept = get_rezept(db, rezept_id)
@@ -83,21 +84,21 @@ def rezept_html(rezept_id: int, request: Request, db: Session = Depends(get_db))
     )
 
 
+# Rezept löschen
+@app.post("/rezepte/{rezept_id}/loeschen")
+def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
+    rezept = db.get(Rezept, rezept_id)
+    if rezept is None:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+    db.delete(rezept)
+    db.commit()
+    return RedirectResponse(url="/", status_code=303)
 
+@app.get("/", response_class=HTMLResponse)
+def landing(request: Request, db: Session = Depends(get_db)):
+    from app.crud import get_alle_rezepte
+    rezepte = get_alle_rezepte(db)
+    return templates.TemplateResponse(
+        request, "landing.html", {"rezepte": rezepte}
+    )
 
-
-# Alt
-# @app.get("/")
-# def hello():
-#     return {"message": "Hallo Welt"}
-
-# @app.get("/rezepte/ofgy")
-# def get_ofgy():
-#     return build_ofgy()
-
-# @app.get("/rezept-html", response_class=HTMLResponse)
-# def rezept_html(request: Request):
-#     rezept = build_ofgy()
-#     return templates.TemplateResponse(
-#         request, "recipe.html", {"rezept": rezept}
-#     )
