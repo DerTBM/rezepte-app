@@ -1,55 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ rezept.title }}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-</head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"/>
+  </head>
 
-<body>
-    <section class="hero" style="background-color: {{ rezept.theme.farbe }};">
-        <div class="hero-body">
-            <h1 class="title is-2"> {{ rezept.title }} </h1>
-            <p class="subtitle">
-                {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
-            </p>
-        </div>
+  <body>
+    <section class="hero" style="background-color: {{ theme.farbe }};">
+      <div class="hero-body">
+        <h1 class="title is-2">{{ rezept.title }}</h1>
+        <p class="subtitle">
+          {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
+        </p>
+      </div>
     </section>
 
     <section class="section">
-        <figure class="image">
+        {% if rezept.bild %}
+        <figure class="image mb-5">
             <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
         </figure>
-        <div class="columns">
-            <div class="column is-half">
-                <h2 class="title is-4">Zutaten</h2>
-                <ul>
-                    {% for zutat in rezept.zutaten %}
-                    <li>{{ zutat.menge }} {{ zutat.einheit.value }} {{ zutat.name }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+        {% endif %}
 
-        <div class="tags">
-            {% for kat in rezept.kategorien %}
-            <span class="tag is-medium">{{ kat.name }}</span>
+      <div class="columns">
+        <div class="column is-half">
+          <h2 class="title is-4">Zutaten</h2>
+          <ul>
+            {% for zutat in rezept.zutaten %}
+            <li> {{ zutat.menge }} {{ zutat.einheit.value }} {{ zutat.name }} </li>
             {% endfor %}
+          </ul>
         </div>
-        <!-- Edit Button -->
-         <a href="/rezepte/{{ rezept.id }}/edit" class="button is-warning is-small">
-            Bearbeiten
-         </a>
-        <!-- Delete Button -->
-        <form method="post" action="/rezepte/{{ rezept.id }}/loeschen"
-            onsubmit="return confirm('Rezept wirklich löschen?');">
-            <button type="submit" class="button is-danger is-small">
-                Rezept löschen
-            </button>
-        </form>
+        <div class="column is-half">
+            <h2 class="title is-4">Zubereitung</h2>
+            <ol>
+                {% for schritt in rezept.schritte %}
+                <li>{{ schritt.text }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+      </div>
 
+      <div class="tags">
+        {% for rk in rezept.kategorien_db %}
+        <span class="tag is-medium">{{ rk.kategorie }}</span>
+        {% endfor %}
+      </div>
+
+      <!-- Edit & Delete Button -->
+      <div class="button mt-5">
+        <a href="/" class="button is-light">Zurück</a>
+        <a href="/rezepte/{{ rezept.id }}/edit" class="button is-warning">Bearbeiten</a>
+        <form method="post" action="/rezepte/{{ rezept.id }}/loeschen"
+            onsubmit="return confirm('Rezept wirklich löschen?');"
+            style="display: inline;">
+            <button type="submit" class="button is-danger">Rezept löschen</button>
+        </form>
+      </div>
     </section>
-</body>
+  </body>
 </html>

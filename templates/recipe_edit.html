@@ -37,8 +37,8 @@
                 <div class="control">
                     <div class="select">
                         <select name="theme">
-                            {% for theme_name in ["Standard", "Abendessen", "Vegan/Vegetarisch", "Festtagsessen", "Weihnachten", "Ostern"] %}
-                                <option value="{{ theme_name }}" {% if rezept.theme == theme_name %}selected{% endif %}>{{ theme_name }}</option>
+                            {% for t in themes %}
+                                <option value="{{ t.name }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

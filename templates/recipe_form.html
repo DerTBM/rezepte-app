@@ -37,12 +37,9 @@
         <div class="control">
             <div class="select">
                 <select name="theme">
-                    <option value="Standard">Standard</option>
-                    <option value="Abendessen">Abendessen</option>
-                    <option value="Vegan/Vegetarisch">Vegan</option>
-                    <option value="Festtagsessen">Festtagsessen</option>
-                    <option value="Weihnachten">Weihnachten</option>
-                    <option value="Ostern">Ostern</option>
+                    {% for t in themes %}
+                        <option value="{{ t.name }}">{{ t.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>

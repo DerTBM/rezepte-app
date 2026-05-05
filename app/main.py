@@ -30,8 +30,9 @@ def get_db():
 # Muss vor Rezept_ID registriert sein, sonst interpretiert FastAPI neu als ID und versucht einen Integer draus zu machen
 @app.get("/rezepte/neu", response_class=HTMLResponse)
 def rezepte_neu_form(request: Request):
+    from app.models import THEMES
     return templates.TemplateResponse(
-        request, "recipe_form.html", {}
+        request, "recipe_form.html", {"themes": THEMES}
     )
 
 
@@ -78,17 +79,23 @@ def rezept_neu_speichern(
     return RedirectResponse(url=f"/rezepte/{neues_rezept.id}", status_code=303)
 
 # Rezept HTML-Seite
-
-
 @app.get("/rezepte/{rezept_id}", response_class=HTMLResponse)
 def rezept_html(rezept_id: int, request: Request, db: Session = Depends(get_db)):
     rezept = get_rezept(db, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
-    return templates.TemplateResponse(
-        request, "recipe.html", {"rezept": rezept}
-    )
+    
+    # Theme-Objekt nachschlagen anhand des Theme-Namens aus dem Rezept
+    from app.models import get_theme, Theme
+    try:
+        theme = get_theme(rezept.theme)
+    except ValueError:
+        # Falls Theme-Name nicht in der Liste, nimm einen Default
+        theme = Theme(name="Standard", farbe="#cccccc")
 
+    return templates.TemplateResponse(
+        request, "recipe.html", {"rezept": rezept, "theme": theme}
+    )
 
 # Rezept löschen
 @app.post("/rezepte/{rezept_id}/loeschen")
@@ -115,8 +122,9 @@ def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get
     rezept = get_rezept(db, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+    from app.models import THEMES
     return templates.TemplateResponse(
-        request, "recipe_edit.html", {"rezept": rezept}
+        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES}
     )
 
 
