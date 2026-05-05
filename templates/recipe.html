@@ -11,7 +11,6 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
 </head>
 <body style="--theme-color: {{ theme.farbe }};">
 
@@ -20,51 +19,51 @@
         <a href="/rezepte/{{ rezept.id }}/edit" class="topbar-action">Bearbeiten</a>
     </nav>
 
-    <section class="recipe-hero">
-        <div class="recipe-content">
+    <article class="recipe-card">
+        <header class="recipe-hero">
             <h1 class="recipe-title">{{ rezept.title }}</h1>
-            <p class="recipe-meta">
-                {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
-            </p>
-        </div>
-    </section>
+        </header>
 
-    <main class="recipe-content">
-        <div class="recipe-main-grid">
-            <div class="zutaten-spalte">
-                <h2 class="section-headline">Zutaten</h2>
-                <ul class="zutaten-list">
-                    {% for zutat in rezept.zutaten %}
-                    <li>
-                        <span class="zutaten-menge">{{ zutat.menge }} {{ zutat.einheit.value }}</span>
-                        {{ zutat.name }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="bild-spalte">
-                {% if rezept.bild %}
-                <figure class="recipe-image">
-                    <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
-                </figure>
-                {% endif %}
-                <div class="kategorie-tags">
-                    {% for rk in rezept.kategorien_db %}
-                    <a href="/kategorie/{{ rk.kategorie }}" class="kategorie-tag">{{ rk.kategorie }}</a>
-                    {% endfor %}
+        <div class="recipe-body">
+            <div class="recipe-main-grid">
+                <div class="zutaten-spalte">
+                    <h2 class="section-headline">Zutaten</h2>
+                    <ul class="zutaten-list">
+                        {% for zutat in rezept.zutaten %}
+                        <li>
+                            <span class="zutaten-menge">{{ "%g"|format(zutat.menge) }} {{ zutat.einheit.value }}</span>
+                            {{ zutat.name }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="bild-spalte">
+                    {% if rezept.bild %}
+                    <figure class="recipe-image">
+                        <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
+                    </figure>
+                    {% endif %}
+                    <p class="recipe-meta">
+                        {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
+                    </p>
+                    <div class="kategorie-tags">
+                        {% for rk in rezept.kategorien_db %}
+                        <a href="/kategorie/{{ rk.kategorie }}" class="kategorie-tag">{{ rk.kategorie }}</a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="zubereitung-block">
-            <h2 class="section-headline-themed">Zubereitung</h2>
-            <ol class="schritte-list">
-                {% for schritt in rezept.schritte %}
-                <li>{{ schritt.text }}</li>
-                {% endfor %}
-            </ol>
+            <div class="zubereitung-block">
+                <h2 class="section-headline">Zubereitung</h2>
+                <ol class="schritte-list">
+                    {% for schritt in rezept.schritte %}
+                    <li>{{ schritt.text }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
         </div>
-    </main>
+    </article>
 
 </body>
 </html>

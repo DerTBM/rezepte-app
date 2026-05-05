@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ kategorie.name }} - Rezept</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
+</head>
+<body style="--theme-color: {{ kategorie.farbe }};">
+    <nav class="recipe-topbar">
+        <a href="/" class="topbar-back">← Zurück</a>
+    </nav>
+    
+    <main class="page-content">
+        <section class="kategorie-hero" style="background-color: {{ kategorie.farbe }};">
+            <h1 class="kategorie-title">{{ kategorie.name }}</h1>
+        </section>
+        
+        {% if rezepte %}
+            <div class="rezepte-grid">
+                {% for rezept in rezepte %}
+                <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
+                    {% if rezept.bild %}
+                    <div class="rezept-card-image">
+                        <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
+                    </div>
+                    {% else %}
+                    <div class="rezept-card-image rezept-card-image-placeholder">
+                        <span>📋</span>
+                    </div>
+                    {% endif %}
+                    <div class="rezept-card-body">
+                        <h3 class="rezept-card-title">{{ rezept.title }}</h3>
+                        <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">Noch keine Rezepte in dieser Kategorie.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

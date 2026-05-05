@@ -108,15 +108,6 @@ def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
     return RedirectResponse(url="/", status_code=303)
 
 
-@app.get("/", response_class=HTMLResponse)
-def landing(request: Request, db: Session = Depends(get_db)):
-    from app.crud import get_alle_rezepte
-    rezepte = get_alle_rezepte(db)
-    return templates.TemplateResponse(
-        request, "landing.html", {"rezepte": rezepte}
-    )
-
-
 @app.get("/rezepte/{rezept_id}/edit", response_class=HTMLResponse)
 def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get_db)):
     rezept = get_rezept(db, rezept_id)
@@ -174,3 +165,38 @@ def rezept_edit_speichern(
     db.commit()
 
     return RedirectResponse(url=f"/rezepte/{rezept_id}", status_code=303)
+
+@app.get("/kategorie/{kategorie_name}", response_class=HTMLResponse)
+def kategorie_seite(kategorie_name: str, request: Request, db: Session = Depends(get_db)):
+    from app.crud import get_rezepte_nach_kategorie
+    from app.models import get_kategorie
+
+    rezepte = get_rezepte_nach_kategorie(db, kategorie_name)
+
+    try:
+        kategorie = get_kategorie(kategorie_name)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Kategorie nicht gefunden")
+    
+    return templates.TemplateResponse(
+        request, "kategorie.html", {"kategorie": kategorie, "rezepte": rezepte}
+    )
+
+@app.get("/suche", response_class=HTMLResponse)
+def suche_seite(request: Request, q: str = "", db: Session = Depends(get_db)):
+    from app.crud import suche_rezepte
+    
+    rezepte = suche_rezepte(db, q) if q else []
+
+    return templates.TemplateResponse(
+        request, "suche.html", {"suchbegriff": q, "rezepte":rezepte}
+    )
+
+@app.get("/", response_class=HTMLResponse)
+def landing(request: Request, db: Session = Depends(get_db)):
+    from app.crud import get_alle_rezepte
+    from app.models import KATEGORIEN
+    rezepte = get_alle_rezepte(db)
+    return templates.TemplateResponse(
+        request, "landing.html", {"rezepte": rezepte, "kategorien": KATEGORIEN}
+    )

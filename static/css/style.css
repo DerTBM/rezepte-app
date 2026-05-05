@@ -2,7 +2,8 @@
     --theme-color: #cccccc;
     --text-color: #2c2c2c;
     --muted-color: #6b6b6b;
-    --bg-color: #fdfdfd;
+    --bg-color: #f0eeeb;
+    --card-bg: #fdfdfd;
     --border-color: #e8e8e8;
 }
 
@@ -11,6 +12,7 @@ body {
     color: var(--text-color);
     background-color: var(--bg-color);
     margin: 0;
+    padding-bottom: 3rem;
 }
 
 h1, h2, h3, h4 {
@@ -23,7 +25,7 @@ h1, h2, h3, h4 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem;
     max-width: 1100px;
     margin: 0 auto;
 }
@@ -32,7 +34,7 @@ h1, h2, h3, h4 {
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.9rem;
     border-radius: 4px;
     transition: opacity 0.15s;
 }
@@ -57,46 +59,48 @@ h1, h2, h3, h4 {
 .topbar-delete {
     color: #c0392b;
     font-size: 0.9rem;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0.9rem;
+    font-family: inherit;
 }
 
 .topbar-delete:hover {
     color: #922b21;
 }
 
+/* === Rezept-Karte: das ganze Rezept als Block mit Schatten === */
+.recipe-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
 /* === Hero-Banner mit Theme-Farbe === */
 .recipe-hero {
     background-color: var(--theme-color);
-    padding: 1.5rem 0;
-    border-bottom: 4px solid rgba(0, 0, 0, 0.08);
-}
-
-.recipe-hero .recipe-content {
-    padding: 0.5rem 2rem;
+    padding: 1.2rem 2.5rem;
 }
 
 .recipe-title {
     font-family: 'Bebas Neue', 'Impact', sans-serif;
     font-size: 4rem;
     font-weight: 400;
-    margin: 0 0 0.3rem 0;
+    margin: 0;
     color: var(--text-color);
     letter-spacing: 0.04em;
     line-height: 1;
     text-transform: uppercase;
 }
 
-.recipe-meta {
-    font-size: 1.1rem;
-    color: var(--text-color);
-    opacity: 0.85;
-    margin: 0;
-}
-
-/* === Container für die Detail-Seite === */
-.recipe-content {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
+/* === Inhaltsbereich der Karte === */
+.recipe-body {
+    padding: 2.5rem;
 }
 
 /* === Haupt-Grid: Zutaten links, Bild rechts === */
@@ -105,10 +109,6 @@ h1, h2, h3, h4 {
     grid-template-columns: 1fr 1.2fr;
     gap: 3rem;
     margin-bottom: 3rem;
-}
-
-.zutaten-spalte {
-    /* leer, aber semantisch hilfreich */
 }
 
 .bild-spalte {
@@ -133,18 +133,16 @@ h1, h2, h3, h4 {
     display: block;
 }
 
-/* === Sektions-Headlines === */
-.section-headline {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--theme-color);
-    display: inline-block;
+/* === Meta-Info unter dem Bild === */
+.recipe-meta {
+    font-size: 1rem;
+    color: var(--muted-color);
+    margin: 0;
+    padding: 0.5rem 0;
 }
 
-.section-headline-themed {
+/* === Sektions-Headline (Theme-farben Block, gleich für Zutaten und Zubereitung) === */
+.section-headline {
     font-family: 'Bebas Neue', 'Impact', sans-serif;
     font-size: 2.2rem;
     font-weight: 400;
@@ -199,8 +197,8 @@ h1, h2, h3, h4 {
     counter-increment: step;
     padding: 1rem 0 1rem 3.5rem;
     position: relative;
-    font-size: 1.05rem;
-    line-height: 1.6;
+    font-size: 1.15rem;
+    line-height: 1.65;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -212,9 +210,9 @@ h1, h2, h3, h4 {
     content: counter(step) ".";
     position: absolute;
     left: 0;
-    top: 0.9rem;
+    top: 0.85rem;
     font-family: 'Bebas Neue', 'Impact', sans-serif;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 400;
     color: var(--theme-color);
     width: 2.5rem;
@@ -236,7 +234,7 @@ h1, h2, h3, h4 {
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s, transform 0.15s;
     opacity: 0.85;
 }
 
@@ -245,7 +243,244 @@ h1, h2, h3, h4 {
     transform: translateY(-1px);
 }
 
-/* === Responsive: Bei schmalen Bildschirmen Spalten stapeln === */
+/* Page-Topbar */
+.page-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.topbar-action-neutral {
+    background-color: var(--text-color);
+    color: var(--card-bg);
+    padding: 0.5rem 1.1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: opacity 0.15s;
+}
+
+.topbar-action-neutral:hover {
+    opacity: 0.85;
+}
+
+/* === Page-Content === */
+.page-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 2rem 4rem;
+}
+
+.page-section-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 2.5rem 0 1.2rem;
+    color: var(--text-color);
+}
+
+/* === Suchfeld === */
+.search-section {
+    margin: 2rem 0;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.1rem;
+    font-family: 'Source Sans 3', sans-serif;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+
+.search-button {
+    padding: 0.9rem 1.8rem;
+    background-color: var(--text-color);
+    color: var(--card-bg);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.search-button:hover {
+    opacity: 0.85;
+}
+
+/* === Kategorie-Grid === */
+.kategorie-section {
+    margin-bottom: 3rem;
+}
+
+.kategorie-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+}
+
+.kategorie-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-align: center;
+    min-height: 70px;
+}
+
+.kategorie-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* === Rezepte-Grid === */
+.rezepte-section {
+    margin-top: 2rem;
+}
+
+.rezepte-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.rezept-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+}
+
+.rezept-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.rezept-card-image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.rezept-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.rezept-card-image-placeholder {
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--muted-color);
+    opacity: 0.5;
+}
+
+.rezept-card-body {
+    padding: 1rem 1.2rem;
+}
+
+.rezept-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem 0;
+}
+
+.rezept-card-meta {
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    margin: 0;
+}
+
+/* === Kategorie-Seite === */
+.kategorie-hero {
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.kategorie-title {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin: 0;
+    color: var(--text-color);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+/* === Empty State === */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--muted-color);
+    font-size: 1.1rem;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .kategorie-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .recipe-title {
+        font-size: 3rem;
+    }
+}
+
+/* === Responsive === */
 @media (max-width: 768px) {
     .recipe-main-grid {
         grid-template-columns: 1fr;
@@ -254,5 +489,13 @@ h1, h2, h3, h4 {
     
     .recipe-title {
         font-size: 3rem;
+    }
+    
+    .recipe-body {
+        padding: 1.5rem;
+    }
+    
+    .recipe-hero {
+        padding: 1rem 1.5rem;
     }
 }

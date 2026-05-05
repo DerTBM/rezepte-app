@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Familienrezepte</title>
+    <title>Suche - Familienrezepte</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,37 +13,26 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
 </head>
-
 <body>
-    <nav class="page-topbar">
-        <h1 class="brand-title">Landing Page</h1>
-        <a href="/rezepte/neu" class="topbar-action-neutral">+ Neues Rezept</a>
+
+    <nav class="recipe-topbar">
+        <a href="/" class="topbar-back">← Zurück</a>
     </nav>
 
     <main class="page-content">
+        
         <section class="search-section">
             <form action="/suche" method="get" class="search-form">
-                <input type="text" name="q" class="search-input" placeholder="Suchen..." autocomplete="on">
+                <input type="text" name="q" class="search-input" placeholder="Was möchtest du heute kochen?" value="{{ suchbegriff }}" autocomplete="off">
                 <button type="submit" class="search-button">Suchen</button>
             </form>
         </section>
 
-
-        <section class="kategorie-section">
-            <h2 class="page-section-headline">Kategorien</h2>
-            <div class="kategorie-grid">
-                {% for kat in kategorien %}
-                    {% if kat.name != "Sous Vide" %}
-                    <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
-                        {{ kat.name }}
-                    </a>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="rezepte-section">
-            <h2 class="page-section-headline">Alle Rezepte</h2>
+        {% if suchbegriff %}
+            <h2 class="page-section-headline">
+                {{ rezepte|length }} Treffer für "{{ suchbegriff }}"
+            </h2>
+            
             {% if rezepte %}
                 <div class="rezepte-grid">
                     {% for rezept in rezepte %}
@@ -65,9 +54,10 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="empty-state">Noch keine Rezepte angelegt.</p>
+                <p class="empty-state">Keine Rezepte gefunden.</p>
             {% endif %}
-        </section>
+        {% endif %}
     </main>
+
 </body>
 </html>
