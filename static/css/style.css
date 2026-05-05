@@ -1,17 +1,16 @@
-/* Globale Variablen */
 :root {
-    --theme-color: #cccccc; /* Default */
+    --theme-color: #cccccc;
     --text-color: #2c2c2c;
-    --muted-color: #6b6b6b; 
+    --muted-color: #6b6b6b;
     --bg-color: #fdfdfd;
     --border-color: #e8e8e8;
 }
 
-/* Fonts */
 body {
-    font-family:  'Source Sans 3', sans-serif;
+    font-family: 'Source Sans 3', sans-serif;
     color: var(--text-color);
     background-color: var(--bg-color);
+    margin: 0;
 }
 
 h1, h2, h3, h4 {
@@ -19,29 +18,122 @@ h1, h2, h3, h4 {
     color: var(--text-color);
 }
 
-/* Hero Banner */
-.recipe-hero {
+/* === Topbar mit Zurück + Action === */
+.recipe-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.topbar-back, .topbar-action {
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: opacity 0.15s;
+}
+
+.topbar-back {
+    color: var(--muted-color);
+}
+
+.topbar-back:hover {
+    color: var(--text-color);
+}
+
+.topbar-action {
     background-color: var(--theme-color);
-    padding: 3rem 2rem;
-    border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
 }
 
-.recipe-hero .recipe-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-    letter-spacing: 0.02em;
-}
-
-.recipe-hero .recipe-meta {
-    font-size: 1.1rem;
-    color: var(--text-color);
+.topbar-action:hover {
     opacity: 0.85;
 }
 
-/* Section Headlines */
+.topbar-delete {
+    color: #c0392b;
+    font-size: 0.9rem;
+}
+
+.topbar-delete:hover {
+    color: #922b21;
+}
+
+/* === Hero-Banner mit Theme-Farbe === */
+.recipe-hero {
+    background-color: var(--theme-color);
+    padding: 1.5rem 0;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.08);
+}
+
+.recipe-hero .recipe-content {
+    padding: 0.5rem 2rem;
+}
+
+.recipe-title {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 4rem;
+    font-weight: 400;
+    margin: 0 0 0.3rem 0;
+    color: var(--text-color);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.recipe-meta {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.85;
+    margin: 0;
+}
+
+/* === Container für die Detail-Seite === */
+.recipe-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* === Haupt-Grid: Zutaten links, Bild rechts === */
+.recipe-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.zutaten-spalte {
+    /* leer, aber semantisch hilfreich */
+}
+
+.bild-spalte {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* === Recipe Image mit fester Aspect Ratio === */
+.recipe-image {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    aspect-ratio: 4 / 3;
+    margin: 0;
+}
+
+.recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* === Sektions-Headlines === */
 .section-headline {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
@@ -52,14 +144,29 @@ h1, h2, h3, h4 {
     display: inline-block;
 }
 
-/* Zutaten-Liste */
+.section-headline-themed {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    padding: 0.5rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* === Zutaten-Liste === */
 .zutaten-list {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .zutaten-list li {
-    padding: 0.5rem 0;
+    padding: 0.6rem 0;
     border-bottom: 1px solid var(--border-color);
     font-size: 1.05rem;
 }
@@ -72,19 +179,25 @@ h1, h2, h3, h4 {
     font-weight: 600;
     color: var(--theme-color);
     display: inline-block;
-    min-width: 4rem;
+    min-width: 5rem;
+    filter: brightness(0.7);
 }
 
-/* Schritte */
+/* === Zubereitungs-Block === */
+.zubereitung-block {
+    margin-top: 2rem;
+}
+
 .schritte-list {
     list-style: none;
     padding: 0;
     counter-reset: step;
+    margin: 0;
 }
 
 .schritte-list li {
     counter-increment: step;
-    padding: 1rem 0 1rem 3rem;
+    padding: 1rem 0 1rem 3.5rem;
     position: relative;
     font-size: 1.05rem;
     line-height: 1.6;
@@ -99,20 +212,20 @@ h1, h2, h3, h4 {
     content: counter(step) ".";
     position: absolute;
     left: 0;
-    top: 1rem;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
+    top: 0.9rem;
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 400;
     color: var(--theme-color);
     width: 2.5rem;
+    filter: brightness(0.7);
 }
 
-/* Tags und Kategorien */
+/* === Tags / Kategorien === */
 .kategorie-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 2rem;
 }
 
 .kategorie-tag {
@@ -122,37 +235,24 @@ h1, h2, h3, h4 {
     color: var(--text-color);
     font-size: 0.9rem;
     font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.15s;
     opacity: 0.85;
 }
 
-/* === Buttons mit Theme-Akzent === */
-.button-themed {
-    background-color: var(--theme-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.6rem 1.4rem;
-    border-radius: 4px;
-    font-family: 'Source Sans 3', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
+.kategorie-tag:hover {
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
-.button-themed:hover {
-    opacity: 0.9;
-}
-
-/* === Recipe-Image === */
-.recipe-image {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* === Container für die Detail-Seite === */
-.recipe-content {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
+/* === Responsive: Bei schmalen Bildschirmen Spalten stapeln === */
+@media (max-width: 768px) {
+    .recipe-main-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .recipe-title {
+        font-size: 3rem;
+    }
 }

@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ rezept.title }}</title>
     
-    <!-- Google Fonts: Playfair Display + Source Sans 3 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Bulma als Reset/Grundgerüst, danach unser eigenes CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
 </head>
 <body style="--theme-color: {{ theme.farbe }};">
+
+    <nav class="recipe-topbar">
+        <a href="/" class="topbar-back">← Zurück</a>
+        <a href="/rezepte/{{ rezept.id }}/edit" class="topbar-action">Bearbeiten</a>
+    </nav>
 
     <section class="recipe-hero">
         <div class="recipe-content">
@@ -26,14 +30,8 @@
     </section>
 
     <main class="recipe-content">
-        {% if rezept.bild %}
-        <figure class="recipe-image mb-5">
-            <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
-        </figure>
-        {% endif %}
-
-        <div class="columns mt-5">
-            <div class="column is-half">
+        <div class="recipe-main-grid">
+            <div class="zutaten-spalte">
                 <h2 class="section-headline">Zutaten</h2>
                 <ul class="zutaten-list">
                     {% for zutat in rezept.zutaten %}
@@ -44,30 +42,27 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="column is-half">
-                <h2 class="section-headline">Zubereitung</h2>
-                <ol class="schritte-list">
-                    {% for schritt in rezept.schritte %}
-                    <li>{{ schritt.text }}</li>
+            <div class="bild-spalte">
+                {% if rezept.bild %}
+                <figure class="recipe-image">
+                    <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
+                </figure>
+                {% endif %}
+                <div class="kategorie-tags">
+                    {% for rk in rezept.kategorien_db %}
+                    <a href="/kategorie/{{ rk.kategorie }}" class="kategorie-tag">{{ rk.kategorie }}</a>
                     {% endfor %}
-                </ol>
+                </div>
             </div>
         </div>
 
-        <div class="kategorie-tags">
-            {% for rk in rezept.kategorien_db %}
-            <span class="kategorie-tag">{{ rk.kategorie }}</span>
-            {% endfor %}
-        </div>
-
-        <div class="buttons mt-6">
-            <a href="/" class="button is-light">Zurück</a>
-            <a href="/rezepte/{{ rezept.id }}/edit" class="button-themed">Bearbeiten</a>
-            <form method="post" action="/rezepte/{{ rezept.id }}/loeschen"
-                  onsubmit="return confirm('Rezept wirklich löschen?');"
-                  style="display: inline;">
-                <button type="submit" class="button is-danger">Löschen</button>
-            </form>
+        <div class="zubereitung-block">
+            <h2 class="section-headline-themed">Zubereitung</h2>
+            <ol class="schritte-list">
+                {% for schritt in rezept.schritte %}
+                <li>{{ schritt.text }}</li>
+                {% endfor %}
+            </ol>
         </div>
     </main>
 
