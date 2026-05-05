@@ -1,0 +1,158 @@
+/* Globale Variablen */
+:root {
+    --theme-color: #cccccc; /* Default */
+    --text-color: #2c2c2c;
+    --muted-color: #6b6b6b; 
+    --bg-color: #fdfdfd;
+    --border-color: #e8e8e8;
+}
+
+/* Fonts */
+body {
+    font-family:  'Source Sans 3', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-color);
+}
+
+/* Hero Banner */
+.recipe-hero {
+    background-color: var(--theme-color);
+    padding: 3rem 2rem;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+}
+
+.recipe-hero .recipe-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    letter-spacing: 0.02em;
+}
+
+.recipe-hero .recipe-meta {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.85;
+}
+
+/* Section Headlines */
+.section-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--theme-color);
+    display: inline-block;
+}
+
+/* Zutaten-Liste */
+.zutaten-list {
+    list-style: none;
+    padding: 0;
+}
+
+.zutaten-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.05rem;
+}
+
+.zutaten-list li:last-child {
+    border-bottom: none;
+}
+
+.zutaten-menge {
+    font-weight: 600;
+    color: var(--theme-color);
+    display: inline-block;
+    min-width: 4rem;
+}
+
+/* Schritte */
+.schritte-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: step;
+}
+
+.schritte-list li {
+    counter-increment: step;
+    padding: 1rem 0 1rem 3rem;
+    position: relative;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.schritte-list li:last-child {
+    border-bottom: none;
+}
+
+.schritte-list li::before {
+    content: counter(step) ".";
+    position: absolute;
+    left: 0;
+    top: 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--theme-color);
+    width: 2.5rem;
+}
+
+/* Tags und Kategorien */
+.kategorie-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.kategorie-tag {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* === Buttons mit Theme-Akzent === */
+.button-themed {
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: 4px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button-themed:hover {
+    opacity: 0.9;
+}
+
+/* === Recipe-Image === */
+.recipe-image {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* === Container für die Detail-Seite === */
+.recipe-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
