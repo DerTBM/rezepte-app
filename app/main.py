@@ -36,6 +36,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Custom Filter für Templates: 0.25 -> "1/4"
 templates.env.filters["bruch"] = menge_als_bruch
 
+
 def get_db():
     """
     Dependency: stellt eine DB-Session bereit und schließt sie nach dem Request.
@@ -117,15 +118,21 @@ def rezept_neu_speichern(
             continue
         einheit = Einheit(einheit_str)
 
-    # Bei frei-Einheiten: Menge ignorieren, sonst parsen
+        # Bei frei-Einheiten: Menge ignorieren, sonst parsen
         if einheit.value in EINHEITEN_OHNE_MENGE:
             menge = None
         else:
+            # Komma-zu-Punkt-Konvertierung (Familienmitglieder tippen oft "0,5" statt "0.5")
             menge_clean = menge_str.replace(",", ".").strip()
-            menge = float(menge_clean) if menge_clean else None
+            try:
+                menge = float(menge_clean) if menge_clean else None
+            except ValueError:
+                # User hat was Nicht-Numerisches eingetippt (z.B. "sdf").
+                # Statt zu crashen: Menge als None speichern.
+                menge = None
 
-    zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
-    neues_rezept.zutaten.append(zutat)
+        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
+        neues_rezept.zutaten.append(zutat)
 
     # Schritte zusammenbauen
     for i, text in enumerate(schritt_text):
@@ -186,15 +193,16 @@ def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get
     rezept = get_rezept(db, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
-    
-    # Theme Farbe für die Kartenoptik der Edit-Seite holen
+
+    # Theme-Farbe für die Karten-Optik der Edit-Seite holen
     try:
         aktuelle_theme_farbe = get_theme(rezept.theme).farbe
     except ValueError:
         aktuelle_theme_farbe = "#cccccc"
 
     return templates.TemplateResponse(
-        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES, "kategorien": KATEGORIEN, "aktuelle_theme_farbe": aktuelle_theme_farbe}
+        request, "recipe_edit.html",
+        {"rezept": rezept, "themes": THEMES, "kategorien": KATEGORIEN, "aktuelle_theme_farbe": aktuelle_theme_farbe}
     )
 
 
@@ -257,7 +265,11 @@ def rezept_edit_speichern(
         else:
             # Komma-zu-Punkt-Konvertierung (Familienmitglieder tippen oft "0,5" statt "0.5")
             menge_clean = menge_str.replace(",", ".").strip()
-            menge = float(menge_clean) if menge_clean else None
+            try:
+                menge = float(menge_clean) if menge_clean else None
+            except ValueError:
+                # User hat was Nicht-Numerisches eingetippt - Menge als None speichern.
+                menge = None
 
         zutat = Zutat(
             name=name,
@@ -266,7 +278,7 @@ def rezept_edit_speichern(
             einheit=einheit,
             position=i,
         )
-        rezept.zutaten.append(zutat)  # bzw. neues_rezept.zutaten im Create-Endpunkt
+        rezept.zutaten.append(zutat)
 
     # Neue Schritte anlegen
     for i, text in enumerate(schritt_text):

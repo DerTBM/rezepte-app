@@ -55,34 +55,34 @@ class Theme:
 # Feste Liste aller verfügbaren Kategorien.
 # Wird in der UI als Multi-Select-Auswahl angezeigt.
 KATEGORIEN = [
-    Kategorie(name="Abendessen", farbe="#a594a8"),
-    Kategorie(name="Schwein", farbe="#f3c3d2"),
-    Kategorie(name="Rind", farbe="#f99374"),
-    Kategorie(name="Geflügel", farbe="#cbe0ed"),
-    Kategorie(name="Sonstiges Fleisch", farbe="#539da3"),
+    Kategorie(name="Abendessen", farbe="#84a59d"),
+    Kategorie(name="Schwein", farbe="#ffcad4"),
+    Kategorie(name="Rind", farbe="#c02f32"),
+    Kategorie(name="Geflügel", farbe="#f6bd60"),
+    Kategorie(name="Sonstiges Fleisch", farbe="#f4a261"),
     Kategorie(name="Fisch", farbe="#3ea1ce"),
     Kategorie(name="Vegan/Vegetarisch", farbe="#6aa93e"),
-    Kategorie(name="Desserts & Getränke", farbe="#e7aede"),
-    Kategorie(name="Kuchen & Torten", farbe="#cc8335"),
-    Kategorie(name="Festtagsessen", farbe="#ca1103"),
-    Kategorie(name="Sous Vide", farbe="#ffffff"),
+    Kategorie(name="Desserts & Getränke", farbe="#cfbaf0"),
+    Kategorie(name="Kuchen & Torten", farbe="#f1c0e8"),
+    Kategorie(name="Festtagsessen", farbe="#bf0603"),
+    Kategorie(name="Sous Vide", farbe="#dad7cd"),
 ]
 
-# Feste Liste aller verfügbaren Themes.
+# Feste Liste aller verfügbaren Themes.C
 # 'Standard' ist der Default für neue Rezepte ohne spezifisches Theme.
 THEMES = [
-    Theme(name="Standard", farbe="#cccccc"),
-    Theme(name="Abendessen", farbe="#a594a8"),
-    Theme(name="Schwein", farbe="#f3c3d2"),
-    Theme(name="Rind", farbe="#f99374"),
-    Theme(name="Geflügel", farbe="#cbe0ed"),
-    Theme(name="Sonstiges Fleisch", farbe="#539da3"),
+    Theme(name="Standard", farbe="#001524"),
+    Theme(name="Abendessen", farbe="#84a59d"),
+    Theme(name="Schwein", farbe="#ffcad4"),
+    Theme(name="Rind", farbe="#c02f32"),
+    Theme(name="Geflügel", farbe="#f6bd60"),
+    Theme(name="Sonstiges Fleisch", farbe="#f4a261"),
     Theme(name="Fisch", farbe="#3ea1ce"),
     Theme(name="Vegan/Vegetarisch", farbe="#6aa93e"),
-    Theme(name="Desserts & Getränke", farbe="#e7aede"),
-    Theme(name="Kuchen & Torten", farbe="#cc8335"),
-    Theme(name="Ostern", farbe="#99cb38"),
-    Theme(name="Weihnachten", farbe="#ca1103"),
+    Theme(name="Desserts & Getränke", farbe="#cfbaf0"),
+    Theme(name="Kuchen & Torten", farbe="#f1c0e8"),
+    Theme(name="Ostern", farbe="#588157"),
+    Theme(name="Weihnachten", farbe="#bf0603"),
     Theme(name="Special", farbe="#8e19fe"),
 ]
 
