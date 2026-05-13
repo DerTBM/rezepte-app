@@ -26,7 +26,14 @@ class Einheit(Enum):
     ESSLOEFFEL = "EL"
     TEELOEFFEL = "TL"
     STUECK = "Stk"
-
+    PRISE = "Prise"
+    SCHUSS = "Schuss"
+    BUND = "Bund"
+    ZEHE = "Zehe"
+    DOSE = "Dose"
+    PACKUNG = "Pck."
+    ETWAS = "etwas"
+    NACH_GESCHMACK = "n. Geschmack"
 
 @dataclass
 class Kategorie:
@@ -93,3 +100,49 @@ def get_theme(name: str) -> Theme:
         if t.name == name:
             return t
     raise ValueError(f"Theme '{name}' nicht gefunden")
+
+# Einheiten ohne konkrete Menge - bei diesen wird im Form die Mengen-Eingabe
+# ausgeblendet und in der DB als NULL gespeichert.
+EINHEITEN_OHNE_MENGE = {"etwas", "n. Geschmack"}
+
+
+def menge_als_bruch(wert: float) -> str:
+    """
+    Wandelt eine Dezimalzahl in eine schön lesbare Form um.
+    Häufige Brüche werden als 1/4, 1/2 etc. dargestellt,
+    ganze Zahlen ohne Nachkommastellen, der Rest mit Dezimal.
+
+    Beispiele:
+        0.25 -> "1/4"
+        0.5  -> "1/2"
+        2.0  -> "2"
+        1.5  -> "1 1/2"
+        0.7  -> "0.7"
+    """
+    if wert is None:
+        return ""
+
+    # Ganze Zahlen ohne Nachkommastellen
+    if wert == int(wert):
+        return str(int(wert))
+
+    # Ganzzahliger Teil und Bruchanteil separieren
+    ganzes = int(wert)
+    rest = round(wert - ganzes, 2)
+
+    # Bekannte Brüche zuordnen
+    bruch_map = {
+        0.25: "1/4",
+        0.33: "1/3",
+        0.5: "1/2",
+        0.67: "2/3",
+        0.75: "3/4",
+    }
+
+    if rest in bruch_map:
+        bruch_str = bruch_map[rest]
+        # "1 1/2" wenn ganzer Teil > 0, sonst nur "1/2"
+        return f"{ganzes} {bruch_str}" if ganzes > 0 else bruch_str
+
+    # Fallback: Dezimal-Anzeige ohne Nullen am Ende
+    return f"{wert:g}"

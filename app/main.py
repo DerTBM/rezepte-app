@@ -23,10 +23,9 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
 from app.db_models import Rezept, Zutat, Schritt, RezeptKategorie
-from app.models import Einheit, THEMES, KATEGORIEN, Theme, get_theme, get_kategorie
+from app.models import Einheit, THEMES, KATEGORIEN, Theme, get_theme, get_kategorie, EINHEITEN_OHNE_MENGE, menge_als_bruch
 from app.crud import get_rezept, get_alle_rezepte, get_rezepte_nach_kategorie, suche_rezepte
 from app.file_upload import save_recipe_image, delete_recipe_image
-
 
 # App-Setup
 app = FastAPI()
@@ -34,6 +33,8 @@ templates = Jinja2Templates(directory="templates")
 # Statische Dateien (CSS, Bilder) werden unter /static/... ausgeliefert
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Custom Filter für Templates: 0.25 -> "1/4"
+templates.env.filters["bruch"] = menge_als_bruch
 
 def get_db():
     """
@@ -87,7 +88,7 @@ def rezept_neu_speichern(
     kategorien: List[str] = Form([]),
     # Die List-Parameter kommen vom Form als mehrere Inputs mit gleichem name:
     # name="zutat_name" mehrfach -> zutat_name = ["Mehl", "Zucker", ...]
-    zutat_menge: List[float] = Form([]),
+    zutat_menge: List[str] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
     zutat_notiz: List[str] = Form([]),
@@ -192,7 +193,7 @@ def rezept_edit_speichern(
     theme: str = Form("Standard"),
     bild: UploadFile = File(None),
     kategorien: List[str] = Form([]),
-    zutat_menge: List[float] = Form([]),
+    zutat_menge: List[str] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
     zutat_notiz: List[str] = Form([]),
@@ -231,12 +232,27 @@ def rezept_edit_speichern(
     rezept.kategorien_db.clear()
 
     # Neue Zutaten anlegen
-    for i, (menge, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
+    for i, (menge_str, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
         if not name.strip():
             continue
         einheit = Einheit(einheit_str)
-        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
-        rezept.zutaten.append(zutat)
+
+        # Bei frei-Einheiten: Menge ignorieren, sonst parsen
+        if einheit.value in EINHEITEN_OHNE_MENGE:
+            menge = None
+        else:
+            # Komma-zu-Punkt-Konvertierung (Familienmitglieder tippen oft "0,5" statt "0.5")
+            menge_clean = menge_str.replace(",", ".").strip()
+            menge = float(menge_clean) if menge_clean else None
+
+        zutat = Zutat(
+            name=name,
+            notiz=notiz.strip() or None,
+            menge=menge,
+            einheit=einheit,
+            position=i,
+        )
+        rezept.zutaten.append(zutat)  # bzw. neues_rezept.zutaten im Create-Endpunkt
 
     # Neue Schritte anlegen
     for i, text in enumerate(schritt_text):

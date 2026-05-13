@@ -31,8 +31,12 @@
                     <ul class="zutaten-list">
                         {% for zutat in rezept.zutaten %}
                         <li>
-                            <!-- %g entfernt unnötige Nachkommastellen: 200.00 -> 200, aber 0.5 bleibt 0.5 -->
-                            <span class="zutaten-menge">{{ "%g"|format(zutat.menge) }} {{ zutat.einheit.value }}</span>
+                            <!-- Bei frei-Einheiten (etwas, n. Geschmack): Menge auslassen -->
+                            {% if zutat.menge is not none %}
+                            <span class="zutaten-menge">{{ zutat.menge|bruch }} {{ zutat.einheit.value }}</span>
+                            {% else %}
+                            <span class="zutaten-menge">{{ zutat.einheit.value }}</span>
+                            {% endif %}
                             {{ zutat.name }}{% if zutat.notiz %} <span class="zutaten-notiz">({{ zutat.notiz }})</span>{% endif %}
                         </li>
                         {% endfor %}
