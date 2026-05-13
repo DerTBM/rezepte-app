@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- Standard-Meta-Tags  -->>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Seitentitel wird je nach Template überschrieben -->
+    <title>{% block title %}HaFaReFi{% endblock %}</title>
+
+    <!-- Google Fonts und Stylesheets
+    Bulma als Grundgerüst und dann eigenes CSS on top -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
+
+    <!-- Block für seitenspezifische, zusätzliche Inhalte für Head (bspw. Scripts) -->
+    {% block extra_head %}{% endblock %}
+</head>
+
+<!-- Block für Body-Attribute, z.B. zum Setzen der Theme Farbe  -->
+<body{% block body_attrs %}{% endblock %}>
+
+    <!-- Hauptinhalt der Seite, jedes Kind-Template definiert hier den eigenen Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Block für seitenspezifische Scripts am Ende des Body -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

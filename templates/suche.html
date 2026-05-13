@@ -1,39 +1,33 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Suche - Familienrezepte</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
-</head>
-<body>
+<!-- Such-Ergebnisseite: zeigt Treffer zum Suchbegriff aus der URL ?q=... -->
+{% extends "base.html" %}
 
+{% block title %}Suche - Familienrezepte{% endblock %}
+
+{% block content %}
+    <!-- Topbar mit Zurück-Link -->
     <nav class="recipe-topbar">
         <a href="/" class="topbar-back">← Zurück</a>
     </nav>
-
+    
     <main class="page-content">
         
+        <!-- Such-Formular - sendet GET-Request an /suche?q=... -->
         <section class="search-section">
             <form action="/suche" method="get" class="search-form">
+                <!-- value vorbelegt mit aktuellem Suchbegriff, falls schon gesucht wurde -->
                 <input type="text" name="q" class="search-input" placeholder="Was möchtest du heute kochen?" value="{{ suchbegriff }}" autocomplete="off">
                 <button type="submit" class="search-button">Suchen</button>
             </form>
         </section>
-
+        
+        <!-- Ergebnisse nur anzeigen, wenn ein Suchbegriff vorhanden ist -->
         {% if suchbegriff %}
             <h2 class="page-section-headline">
                 {{ rezepte|length }} Treffer für "{{ suchbegriff }}"
             </h2>
             
             {% if rezepte %}
+                <!-- Treffer als Kachel-Grid -->
                 <div class="rezepte-grid">
                     {% for rezept in rezepte %}
                     <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
@@ -58,6 +52,4 @@
             {% endif %}
         {% endif %}
     </main>
-
-</body>
-</html>
+{% endblock %}

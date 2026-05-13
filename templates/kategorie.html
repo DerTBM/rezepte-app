@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ kategorie.name }} - Rezept</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
-</head>
-<body style="--theme-color: {{ kategorie.farbe }};">
+<!-- Kategorie-Übersicht: Alle Rezepte einer bestimmten Kategorie -->
+{% extends "base.html" %}
+
+{% block title %}{{ kategorie.name }} - Familienrezepte{% endblock %}
+
+<!-- Kategorie-Farbe als CSS-Variable auf den Body setzen -->
+{% block body_attrs %} style="--theme-color: {{ kategorie.farbe }};"{% endblock %}
+
+{% block content %}
+    <!-- Topbar mit Zurück-Link -->
     <nav class="recipe-topbar">
         <a href="/" class="topbar-back">← Zurück</a>
     </nav>
     
     <main class="page-content">
+        <!-- Hero-Bereich mit Kategorie-Name auf farbigem Hintergrund -->
         <section class="kategorie-hero" style="background-color: {{ kategorie.farbe }};">
             <h1 class="kategorie-title">{{ kategorie.name }}</h1>
         </section>
         
+        <!-- Liste der Rezepte in dieser Kategorie als Kachel-Grid -->
         {% if rezepte %}
             <div class="rezepte-grid">
                 {% for rezept in rezepte %}
@@ -32,6 +28,7 @@
                         <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
                     </div>
                     {% else %}
+                    <!-- Platzhalter wenn kein Bild gesetzt -->
                     <div class="rezept-card-image rezept-card-image-placeholder">
                         <span>📋</span>
                     </div>
@@ -47,5 +44,4 @@
             <p class="empty-state">Noch keine Rezepte in dieser Kategorie.</p>
         {% endif %}
     </main>
-</body>
-</html>
+{% endblock %}

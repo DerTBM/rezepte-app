@@ -1,79 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Neues Rezept</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48" />
+  </head>
+  <body>
     <section class="section">
-        <h1 class="title">Neues Rezept anlegen</h1>
-<form method="post" action="/rezepte/neu">
-    <!-- Bestehende Felder -->
-    <div class="field">
-        <label class="label">Titel</label>
-        <div class="control">
-            <input class="input" type="text" name="title" required>
+      <h1 class="title">Neues Rezept anlegen</h1>
+      <form method="post" action="/rezepte/neu">
+        <!-- Bestehende Felder -->
+        <div class="field">
+          <label class="label">Titel</label>
+          <div class="control">
+            <input class="input" type="text" name="title" required />
+          </div>
         </div>
-    </div>
-    
-    <div class="field">
-        <label class="label">Portionen</label>
-        <div class="control">
-            <input class="input" type="number" name="portionen" value="2" min="1" required>
-        </div>
-    </div>
-    
-    <div class="field">
-        <label class="label">Zubereitungszeit</label>
-        <div class="control">
-            <input class="input" type="text" name="zubereitungszeit" placeholder="z.B. 40 Minuten">
-        </div>
-    </div>
-    
-    <div class="field">
-        <label class="label">Theme</label>
-        <div class="control">
-            <div class="select">
-                <select name="theme">
-                    {% for t in themes %}
-                        <option value="{{ t.name }}">{{ t.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Neu: Zutaten -->
-    <h2 class="subtitle mt-5">Zutaten</h2>
-    <div id="zutaten-container">
-        <!-- Wird dynamisch befüllt -->
-    </div>
-    <button type="button" class="button is-light mb-4" onclick="addZutat()">+ Zutat hinzufügen</button>
-    
-    <!-- Neu: Schritte -->
-    <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
-    <div id="schritte-container">
-        <!-- Wird dynamisch befüllt -->
-    </div>
-    <button type="button" class="button is-light mb-4" onclick="addSchritt()">+ Schritt hinzufügen</button>
-    
-    <!-- Submit -->
-    <div class="field mt-5">
-        <div class="control">
-            <button type="submit" class="button is-primary">Speichern</button>
-        </div>
-    </div>
-</form>
 
-<script>
-    function addZutat() {
-        const container = document.getElementById('zutaten-container');
-        const div = document.createElement('div');
-        div.className = 'field is-grouped mb-2';
-        div.innerHTML = `
+        <div class="field">
+          <label class="label">Portionen</label>
+          <div class="control">
+            <input
+              class="input"
+              type="number"
+              name="portionen"
+              value="2"
+              min="1"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Zubereitungszeit</label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              name="zubereitungszeit"
+              placeholder="z.B. 40 Minuten"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Theme</label>
+          <div class="control">
+            <div class="select">
+              <select name="theme">
+                {% for t in themes %}
+                <option value="{{ t.name }}">{{ t.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Kategorien</label>
+          <div class="control">
+            <div class="kategorien-checkboxes">
+              {% for kat in kategorien %} {% if kat.name != "Sous Vide" %}
+              <label
+                class="kategorie-checkbox"
+                style="--kat-color: {{ kat.farbe }};"
+              >
+                <input
+                  type="checkbox"
+                  name="kategorien"
+                  value="{{ kat.name }}"
+                />
+                <span>{{ kat.name }}</span>
+              </label>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Neu: Zutaten -->
+        <h2 class="subtitle mt-5">Zutaten</h2>
+        <div id="zutaten-container">
+          <!-- Wird dynamisch befüllt -->
+        </div>
+        <button type="button" class="button is-light mb-4" onclick="addZutat()">
+          + Zutat hinzufügen
+        </button>
+
+        <!-- Neu: Schritte -->
+        <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
+        <div id="schritte-container">
+          <!-- Wird dynamisch befüllt -->
+        </div>
+        <button
+          type="button"
+          class="button is-light mb-4"
+          onclick="addSchritt()"
+        >
+          + Schritt hinzufügen
+        </button>
+
+        <!-- Submit -->
+        <div class="field mt-5">
+          <div class="control">
+            <button type="submit" class="button is-primary">Speichern</button>
+          </div>
+        </div>
+      </form>
+
+      <script>
+        function addZutat() {
+          const container = document.getElementById("zutaten-container");
+          const div = document.createElement("div");
+          div.className = "field is-grouped mb-2";
+          div.innerHTML = `
             <div class="control">
                 <input class="input" type="number" name="zutat_menge" placeholder="Menge" step="0.1" required>
             </div>
@@ -97,14 +141,14 @@
                 <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
             </div>
         `;
-        container.appendChild(div);
-    }
-    
-    function addSchritt() {
-        const container = document.getElementById('schritte-container');
-        const div = document.createElement('div');
-        div.className = 'field is-grouped mb-2';
-        div.innerHTML = `
+          container.appendChild(div);
+        }
+
+        function addSchritt() {
+          const container = document.getElementById("schritte-container");
+          const div = document.createElement("div");
+          div.className = "field is-grouped mb-2";
+          div.innerHTML = `
             <div class="control is-expanded">
                 <input class="input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
             </div>
@@ -112,13 +156,13 @@
                 <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
             </div>
         `;
-        container.appendChild(div);
-    }
-    
-    // Beim Laden: eine leere Zeile pro Bereich
-    addZutat();
-    addSchritt();
-</script>
+          container.appendChild(div);
+        }
+
+        // Beim Laden: eine leere Zeile pro Bereich
+        addZutat();
+        addSchritt();
+      </script>
     </section>
-</body>
+  </body>
 </html>

@@ -1,42 +1,44 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ rezept.title }}</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body style="--theme-color: {{ theme.farbe }};">
+<!-- Detail-Seite eines einzelnen Rezepts mit Theme-Farben -->
+{% extends "base.html" %}
 
+{% block title %}{{ rezept.title }}{% endblock %}
+
+<!-- Theme-Farbe als CSS-Variable auf den Body setzen - alle Theme-bezogenen Styles greifen darauf zu -->
+{% block body_attrs %} style="--theme-color: {{ theme.farbe }};"{% endblock %}
+
+{% block content %}
+    <!-- Topbar über der Karte: Zurück links, Bearbeiten rechts -->
     <nav class="recipe-topbar">
         <a href="/" class="topbar-back">← Zurück</a>
         <a href="/rezepte/{{ rezept.id }}/edit" class="topbar-action">Bearbeiten</a>
     </nav>
 
+    <!-- Die eigentliche Rezept-Karte mit Schatten -->
     <article class="recipe-card">
+
+        <!-- Hero-Banner mit Theme-Farbe und Titel -->
         <header class="recipe-hero">
             <h1 class="recipe-title">{{ rezept.title }}</h1>
         </header>
 
         <div class="recipe-body">
+
+            <!-- Haupt-Grid: Zutaten links, Bild + Meta + Tags rechts -->
             <div class="recipe-main-grid">
+
                 <div class="zutaten-spalte">
                     <h2 class="section-headline">Zutaten</h2>
                     <ul class="zutaten-list">
                         {% for zutat in rezept.zutaten %}
                         <li>
+                            <!-- %g entfernt unnötige Nachkommastellen: 200.00 -> 200, aber 0.5 bleibt 0.5 -->
                             <span class="zutaten-menge">{{ "%g"|format(zutat.menge) }} {{ zutat.einheit.value }}</span>
                             {{ zutat.name }}
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
+
                 <div class="bild-spalte">
                     {% if rezept.bild %}
                     <figure class="recipe-image">
@@ -46,6 +48,7 @@
                     <p class="recipe-meta">
                         {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
                     </p>
+                    <!-- Klickbare Kategorie-Tags - führen zur Kategorie-Seite -->
                     <div class="kategorie-tags">
                         {% for rk in rezept.kategorien_db %}
                         <a href="/kategorie/{{ rk.kategorie }}" class="kategorie-tag">{{ rk.kategorie }}</a>
@@ -54,6 +57,7 @@
                 </div>
             </div>
 
+            <!-- Zubereitungsschritte in voller Breite unter Zutaten + Bild -->
             <div class="zubereitung-block">
                 <h2 class="section-headline">Zubereitung</h2>
                 <ol class="schritte-list">
@@ -64,6 +68,4 @@
             </div>
         </div>
     </article>
-
-</body>
-</html>
+{% endblock %}

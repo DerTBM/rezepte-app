@@ -1,26 +1,17 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Familienrezepte</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48" >
-</head>
+<!-- Landing Page: Übersicht aller Rezepte mit Suchfeld und Kategorien -->
+{% extends "base.html" %}
 
-<body>
+{% block title %}HaFaReFi - Hadelkosche Familien Rezepte Fibel{% endblock %}
+
+{% block content %}
     <nav class="page-topbar">
-        <h1 class="brand-title">Landing Page</h1>
+        <h1 class="brand-title">Familienrezepte</h1>
         <a href="/rezepte/neu" class="topbar-action-neutral">+ Neues Rezept</a>
     </nav>
 
     <main class="page-content">
+
+        <!-- Suchfeld - leitet zur /suche-Route weiter  -->
         <section class="search-section">
             <form action="/suche" method="get" class="search-form">
                 <input type="text" name="q" class="search-input" placeholder="Suchen..." autocomplete="on">
@@ -28,20 +19,19 @@
             </form>
         </section>
 
-
+        <!-- Kategorien als farbige Karten - Klick führt zur Kategorie-Übersicht -->
         <section class="kategorie-section">
             <h2 class="page-section-headline">Kategorien</h2>
             <div class="kategorie-grid">
                 {% for kat in kategorien %}
-                    {% if kat.name != "Sous Vide" %}
-                    <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
-                        {{ kat.name }}
-                    </a>
-                    {% endif %}
+                <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
+                    {{ kat.name }}
+                </a>
                 {% endfor %}
             </div>
         </section>
 
+        <!-- Alle Rezepte als Kachel-Grid -->
         <section class="rezepte-section">
             <h2 class="page-section-headline">Alle Rezepte</h2>
             {% if rezepte %}
@@ -53,6 +43,7 @@
                             <img src="/static/{{ rezept.bild }}" alt="{{ rezept.title }}">
                         </div>
                         {% else %}
+                        <!-- Platzhalter wenn kein Bild gesetzt -->
                         <div class="rezept-card-image rezept-card-image-placeholder">
                             <span>📋</span>
                         </div>
@@ -68,6 +59,6 @@
                 <p class="empty-state">Noch keine Rezepte angelegt.</p>
             {% endif %}
         </section>
+
     </main>
-</body>
-</html>
+{% endblock %}
