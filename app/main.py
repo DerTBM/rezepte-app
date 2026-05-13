@@ -112,13 +112,20 @@ def rezept_neu_speichern(
 
     # Zutaten zusammenbauen: zip() kombiniert die parallelen Listen
     # zu Tupeln (menge, einheit, name, notiz), enumerate() liefert dazu den Index.
-    for i, (menge, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
+    for i, (menge_str, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
         if not name.strip():
-            continue  # leere Zeilen aus dem Form überspringen
-        einheit = Einheit(einheit_str)  # String aus Form -> Enum-Wert
-        # notiz.strip() or None: leere Strings als NULL in DB für Konsistenz
-        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
-        neues_rezept.zutaten.append(zutat)
+            continue
+        einheit = Einheit(einheit_str)
+
+    # Bei frei-Einheiten: Menge ignorieren, sonst parsen
+        if einheit.value in EINHEITEN_OHNE_MENGE:
+            menge = None
+        else:
+            menge_clean = menge_str.replace(",", ".").strip()
+            menge = float(menge_clean) if menge_clean else None
+
+    zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
+    neues_rezept.zutaten.append(zutat)
 
     # Schritte zusammenbauen
     for i, text in enumerate(schritt_text):
