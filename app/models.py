@@ -65,6 +65,7 @@ KATEGORIEN = [
     Kategorie(name="Desserts & Getränke", farbe="#e7aede"),
     Kategorie(name="Kuchen & Torten", farbe="#cc8335"),
     Kategorie(name="Festtagsessen", farbe="#ca1103"),
+    Kategorie(name="Sous Vide", farbe="#ffffff"),
 ]
 
 # Feste Liste aller verfügbaren Themes.

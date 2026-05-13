@@ -24,9 +24,12 @@
             <h2 class="page-section-headline">Kategorien</h2>
             <div class="kategorie-grid">
                 {% for kat in kategorien %}
-                <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
-                    {{ kat.name }}
-                </a>
+                <!-- Sous Vide wird auf der Landing ausgeblendet, ist aber als Kategorie sonst verfügbar -->
+                    {% if kat.name != "Sous Vide" %}
+                    <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
+                        {{ kat.name }}
+                    </a>
+                    {% endif %}
                 {% endfor %}
             </div>
         </section>

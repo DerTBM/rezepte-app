@@ -123,10 +123,26 @@ Phase 6+ abgeschlossen. Implementiert:
 - Automatische Backups
 - Authentifizierung (aktuell offen für alle im Netzwerk)
 
-## Setup auf zweitem Rechner (Daten-Sync)
-Die DB läuft aktuell rein lokal. Test-Rezepte gehen verloren beim Rechnerwechsel.
-Workaround: vor dem Wechsel in HeidiSQL einen SQL-Dump exportieren und mit übertragen.
-Mittelfristig kommt das auf den RaspberryPi als zentrale DB.
+## Daten-Sync zwischen Rechnern (DB-Dump)
+Die DB läuft lokal pro Rechner. Um Rezepte zwischen Rechnern zu syncen:
+
+### Auf dem Quell-Rechner (mit aktueller DB):
+1. HeidiSQL öffnen, Rechtsklick auf `rezepte`-Datenbank
+2. "Datenbank als SQL exportieren..."
+3. Einstellungen: "Drop & Create" für Tabellen, "INSERT" für Daten, Ausgabe `data_dump.sql` im Projekt-Root
+4. Im Git committen und pushen:
+
+```
+git add data_dump.sql
+git commit -m "DB-Dump aktualisieren"
+git push
+```
+
+### Auf dem Ziel-Rechner (alte DB überschreiben):
+1. `git pull` im Projekt-Ordner
+2. HeidiSQL: `rezepte`-Datenbank löschen, neu anlegen (utf8mb4_unicode_ci)
+3. Datenbank aktivieren (Doppelklick)
+4. "Datei → SQL-Datei laden..." → `data_dump.sql` ausführen
 
 ## Lizenz
 Privat-Projekt, nicht für Veröffentlichung gedacht.

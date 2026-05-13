@@ -822,6 +822,75 @@ h1, h2, h3, h4 {
     filter: brightness(0.85);
 }
 
+/* Kategorie-Checkboxen im Form als Pillen mit Farb-Akzent */
+.kategorien-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.kategorie-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--kat-color);
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    user-select: none;
+    /* Subtiler Hintergrund-Tint in Kategorie-Farbe damit man die Farbe auch unausgewählt sieht */
+    background-color: color-mix(in srgb, var(--kat-color) 12%, var(--card-bg));
+}
+
+.kategorie-checkbox:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--kat-color) 30%, transparent);
+}
+
+/* Die echte Checkbox verstecken - wir styling-en das Label drumherum */
+.kategorie-checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border-radius: 4px;
+    border: 2px solid var(--kat-color);
+    background-color: var(--card-bg);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.15s;
+}
+
+/* Wenn angekreuzt: Kategorie-Farbe + Häkchen drauf */
+.kategorie-checkbox input[type="checkbox"]:checked {
+    background-color: var(--kat-color);
+    border-color: var(--kat-color);
+}
+
+.kategorie-checkbox input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Wenn das Label-Element eine angekreuzte Box enthält: voller Hintergrund in Kat-Farbe */
+.kategorie-checkbox:has(input:checked) {
+    background-color: var(--kat-color);
+    font-weight: 600;
+}
+
 
 /* ============================================================
    5. RESPONSIVE
