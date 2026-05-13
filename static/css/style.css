@@ -276,6 +276,12 @@ h1, h2, h3, h4 {
     border-bottom: none;
 }
 
+.zutaten-notiz {
+    color: var(--muted-color);
+    font-style: italic;
+    font-size: 1rem;
+}
+
 /* Mengenangabe in Theme-Farbe, mit min-width für saubere Spalten-Ausrichtung.
    filter: brightness(0.7) dunkelt die Theme-Farbe ab - sonst sind helle Themes
    als Textfarbe zu blass. */

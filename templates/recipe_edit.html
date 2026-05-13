@@ -1,248 +1,179 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ rezept.title }} bearbeiten</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
-    />
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
+</head>
+<body>
     <section class="section">
-      <h1 class="title">Rezept bearbeiten</h1>
+        <h1 class="title">Rezept bearbeiten</h1>
 
-      <form method="post" action="/rezepte/{{ rezept.id }}/edit">
-        <div class="field">
-          <label class="label">Titel</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              name="title"
-              value="{{ rezept.title }}"
-              required
-            />
-          </div>
-        </div>
+        <!-- enctype="multipart/form-data" ist Pflicht für File-Upload -->
+        <form method="post" action="/rezepte/{{ rezept.id }}/edit" enctype="multipart/form-data">
 
-        <div class="field">
-          <label class="label">Portionen</label>
-          <div class="control">
-            <input
-              class="input"
-              type="number"
-              name="portionen"
-              value="{{ rezept.portionen }}"
-              min="1"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Zubereitungszeit</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              name="zubereitungszeit"
-              value="{{ rezept.zubereitungszeit or '' }}"
-            />
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Theme</label>
-          <div class="control">
-            <div class="select">
-              <select name="theme">
-                {% for t in themes %}
-                <option
-                  value="{{ t.name }}"
-                  {%
-                  if
-                  rezept.theme=""
-                  ="t.name"
-                  %}selected{%
-                  endif
-                  %}
-                >
-                  {{ t.name }}
-                </option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <h2 class="subtitle mt-5">Zutaten</h2>
-        <div id="zutaten-container">
-          {% for zutat in rezept.zutaten %}
-          <div class="field is-grouped mb-2">
-            <div class="control">
-              <input
-                class="input"
-                type="number"
-                name="zutat_menge"
-                value="{{ zutat.menge }}"
-                placeholder="Menge"
-                step="0.1"
-                required
-              />
-            </div>
-            <div class="control">
-              <div class="select">
-                <select name="zutat_einheit" required>
-                  {% for einheit in ["g", "kg", "ml", "l", "EL", "TL", "Stk"] %}
-                  <option
-                    value="{{ einheit }}"
-                    {%
-                    if
-                    zutat.einheit.value=""
-                    ="einheit"
-                    %}selected{%
-                    endif
-                    %}
-                  >
-                    {{ einheit }}
-                  </option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="control is-expanded">
-              <input
-                class="input"
-                type="text"
-                name="zutat_name"
-                value="{{ zutat.name }}"
-                placeholder="Zutat"
-                required
-              />
-            </div>
-            <div class="control">
-              <button
-                type="button"
-                class="button is-danger"
-                onclick="this.closest('.field').remove()"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button type="button" class="button is-light mb-4" onclick="addZutat()">
-          + Zutat hinzufügen
-        </button>
-
-        <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
-        <div id="schritte-container">
-          {% for schritt in rezept.schritte %}
-          <div class="field is-grouped mb-2">
-            <div class="control is-expanded">
-              <input
-                class="input"
-                type="text"
-                name="schritt_text"
-                value="{{ schritt.text }}"
-                placeholder="Schrittbeschreibung"
-                required
-              />
-            </div>
-            <div class="control">
-              <button
-                type="button"
-                class="button is-danger"
-                onclick="this.closest('.field').remove()"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        <button
-          type="button"
-          class="button is-light mb-4"
-          onclick="addSchritt()"
-        >
-          + Schritt hinzufügen
-        </button>
-
-        <div class="field mt-5 is-grouped">
-          <div class="control">
-            <button type="submit" class="button is-primary">Speichern</button>
-          </div>
-          <div class="control">
-            <a href="/rezepte/{{ rezept.id }}" class="button is-light"
-              >Abbrechen</a
-            >
-          </div>
-          <!-- Lösch-Button ganz rechts, separater Form weil eigener POST-Endpunkt -->
-          <div class="control" style="margin-left: auto">
-            <form
-              method="post"
-              action="/rezepte/{{ rezept.id }}/loeschen"
-              onsubmit="return confirm('Rezept wirklich löschen?');"
-              style="display: inline"
-            >
-              <button type="submit" class="button is-danger">Löschen</button>
-            </form>
-          </div>
-        </div>
-      </form>
-    </section>
-
-    <script>
-      function addZutat() {
-        const container = document.getElementById("zutaten-container");
-        const div = document.createElement("div");
-        div.className = "field is-grouped mb-2";
-        div.innerHTML = `
+            <div class="field">
+                <label class="label">Titel</label>
                 <div class="control">
-                    <input class="input" type="number" name="zutat_menge" placeholder="Menge" step="0.1" required>
+                    <input class="input" type="text" name="title" value="{{ rezept.title }}" required>
                 </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Portionen</label>
+                <div class="control">
+                    <input class="input" type="number" name="portionen" value="{{ rezept.portionen }}" min="1" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Zubereitungszeit</label>
+                <div class="control">
+                    <input class="input" type="text" name="zubereitungszeit" value="{{ rezept.zubereitungszeit or '' }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Theme</label>
                 <div class="control">
                     <div class="select">
-                        <select name="zutat_einheit" required>
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ml">ml</option>
-                            <option value="l">l</option>
-                            <option value="EL">EL</option>
-                            <option value="TL">TL</option>
-                            <option value="Stk">Stk</option>
+                        <select name="theme">
+                            {% for t in themes %}
+                            <option value="{{ t.name }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
-                <div class="control is-expanded">
-                    <input class="input" type="text" name="zutat_name" placeholder="Zutat" required>
-                </div>
-                <div class="control">
-                    <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
-                </div>
-            `;
-        container.appendChild(div);
-      }
+            </div>
 
-      function addSchritt() {
-        const container = document.getElementById("schritte-container");
-        const div = document.createElement("div");
-        div.className = "field is-grouped mb-2";
-        div.innerHTML = `
-                <div class="control is-expanded">
-                    <input class="input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
+            <div class="field">
+                <label class="label">Bild</label>
+                {% if rezept.bild %}
+                <div class="mb-3">
+                    <img src="/static/img/{{ rezept.bild }}" alt="Aktuelles Bild" style="max-width: 200px; border-radius: 6px;">
+                    <p class="help">Aktuelles Bild. Neues hochladen zum Ersetzen.</p>
+                </div>
+                {% endif %}
+                <div class="control">
+                    <input class="input" type="file" name="bild" accept="image/*">
+                </div>
+            </div>
+
+            <h2 class="subtitle mt-5">Zutaten</h2>
+            <div id="zutaten-container">
+                {% for zutat in rezept.zutaten %}
+                <div class="field is-grouped mb-2">
+                    <div class="control">
+                        <input class="input" type="number" name="zutat_menge" value="{{ zutat.menge }}" placeholder="Menge" step="0.1" required>
+                    </div>
+                    <div class="control">
+                        <div class="select">
+                            <select name="zutat_einheit" required>
+                                {% for einheit in ["g", "kg", "ml", "l", "EL", "TL", "Stk"] %}
+                                <option value="{{ einheit }}" {% if zutat.einheit.value == einheit %}selected{% endif %}>{{ einheit }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="zutat_name" value="{{ zutat.name }}" placeholder="Zutat" required>
+                    </div>
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="zutat_notiz" value="{{ zutat.notiz or '' }}" placeholder="Notiz (optional)">
+                    </div>
+                    <div class="control">
+                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="button is-light mb-4" onclick="addZutat()">+ Zutat hinzufügen</button>
+
+            <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
+            <div id="schritte-container">
+                {% for schritt in rezept.schritte %}
+                <div class="field is-grouped mb-2">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="schritt_text" value="{{ schritt.text }}" placeholder="Schrittbeschreibung" required>
+                    </div>
+                    <div class="control">
+                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="button is-light mb-4" onclick="addSchritt()">+ Schritt hinzufügen</button>
+
+            <div class="field mt-5 is-grouped">
+                <div class="control">
+                    <button type="submit" class="button is-primary">Speichern</button>
                 </div>
                 <div class="control">
-                    <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                    <a href="/rezepte/{{ rezept.id }}" class="button is-light">Abbrechen</a>
                 </div>
-            `;
-        container.appendChild(div);
-      }
-    </script>
-  </body>
+                <div class="control" style="margin-left: auto;">
+                    <button type="button" class="button is-danger" onclick="document.getElementById('delete-form').submit();">Löschen</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Lösch-Form außerhalb des Edit-Forms - sonst würde der Lösch-Button das Edit-Form submitten -->
+        <form id="delete-form" method="post" action="/rezepte/{{ rezept.id }}/loeschen"
+              onsubmit="return confirm('Rezept wirklich löschen?');"
+              style="display: none;"></form>
+
+        <script>
+            function addZutat() {
+                const container = document.getElementById("zutaten-container");
+                const div = document.createElement("div");
+                div.className = "field is-grouped mb-2";
+                div.innerHTML = `
+                    <div class="control">
+                        <input class="input" type="number" name="zutat_menge" placeholder="Menge" step="0.1" required>
+                    </div>
+                    <div class="control">
+                        <div class="select">
+                            <select name="zutat_einheit" required>
+                                <option value="g">g</option>
+                                <option value="kg">kg</option>
+                                <option value="ml">ml</option>
+                                <option value="l">l</option>
+                                <option value="EL">EL</option>
+                                <option value="TL">TL</option>
+                                <option value="Stk">Stk</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="zutat_name" placeholder="Zutat" required>
+                    </div>
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="zutat_notiz" placeholder="Notiz (optional)">
+                    </div>
+                    <div class="control">
+                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+
+            function addSchritt() {
+                const container = document.getElementById("schritte-container");
+                const div = document.createElement("div");
+                div.className = "field is-grouped mb-2";
+                div.innerHTML = `
+                    <div class="control is-expanded">
+                        <input class="input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
+                    </div>
+                    <div class="control">
+                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+        </script>
+    </section>
+</body>
 </html>

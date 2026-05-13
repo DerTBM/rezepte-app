@@ -23,7 +23,7 @@ if DATABASE_URL is None:
         "DATABASE_URL nicht gesetzt. Lege eine .env Datei an (siehe .env.example)"
     )
 
-# Der Engine ist SQLAlchemys Verbindungsmanager.
+# Engine ist SQLAlchemys Verbindungsmanager.
 # echo=True schreibt jede SQL-Query ins Terminal - sehr nützlich beim Lernen,
 # in Produktion abschalten (oder Logging anders konfigurieren)
 engine = create_engine(DATABASE_URL, echo=True)

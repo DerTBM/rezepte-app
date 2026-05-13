@@ -16,6 +16,7 @@ CREATE TABLE zutat (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rezept_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
+    notiz VARCHAR(255),
     menge DECIMAL(8,2) NOT NULL,
     einheit ENUM('kg', 'g', 'l', 'ml', 'EL', 'TL', 'Stk') NOT NULL,
     position INT NOT NULL DEFAULT 0,

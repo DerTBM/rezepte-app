@@ -44,6 +44,7 @@ class Zutat(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     rezept_id = Column(Integer, ForeignKey("rezept.id", ondelete="CASCADE"), nullable=False)
     name = Column(String(255), nullable=False)
+    notiz = Column(String(255), nullable=True) # Optionaler Zusatz
     menge = Column(DECIMAL(8, 2), nullable=False)
     # values_callable: speichert den Enum-Wert ("g") statt des Namens ("GRAMM"),
     # passend zum ENUM-Typ in der DB-Tabelle

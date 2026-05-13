@@ -33,7 +33,7 @@
                         <li>
                             <!-- %g entfernt unnötige Nachkommastellen: 200.00 -> 200, aber 0.5 bleibt 0.5 -->
                             <span class="zutaten-menge">{{ "%g"|format(zutat.menge) }} {{ zutat.einheit.value }}</span>
-                            {{ zutat.name }}
+                            {{ zutat.name }}{% if zutat.notiz %} <span class="zutaten-notiz">({{ zutat.notiz }})</span>{% endif %}
                         </li>
                         {% endfor %}
                     </ul>

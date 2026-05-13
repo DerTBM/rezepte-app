@@ -15,16 +15,17 @@ Endpunkt-Struktur:
 """
 from typing import List
 
-from fastapi import FastAPI, Request, Depends, Form, HTTPException
+from fastapi import FastAPI, Request, Depends, Form, HTTPException, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-from app.db_models import Rezept, Zutat, Schritt
+from app.db_models import Rezept, Zutat, Schritt, RezeptKategorie
 from app.models import Einheit, THEMES, KATEGORIEN, Theme, get_theme, get_kategorie
 from app.crud import get_rezept, get_alle_rezepte, get_rezepte_nach_kategorie, suche_rezepte
+from app.file_upload import save_recipe_image, delete_recipe_image
 
 
 # App-Setup
@@ -72,7 +73,7 @@ def landing(request: Request, db: Session = Depends(get_db)):
 def rezepte_neu_form(request: Request):
     """Zeigt das leere Form zum Anlegen eines neuen Rezepts."""
     return templates.TemplateResponse(
-        request, "recipe_form.html", {"themes": THEMES}
+        request, "recipe_form.html", {"themes": THEMES, "kategorien": KATEGORIEN}
     )
 
 
@@ -82,39 +83,53 @@ def rezept_neu_speichern(
     portionen: int = Form(...),
     zubereitungszeit: str = Form(""),
     theme: str = Form("Standard"),
+    bild: UploadFile = File(None),
+    kategorien: List[str] = Form([]),
     # Die List-Parameter kommen vom Form als mehrere Inputs mit gleichem name:
     # name="zutat_name" mehrfach -> zutat_name = ["Mehl", "Zucker", ...]
     zutat_menge: List[float] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
+    zutat_notiz: List[str] = Form([]),
     schritt_text: List[str] = Form([]),
     db: Session = Depends(get_db),
 ):
     """Verarbeitet das Form-Submit beim Neuanlegen und schreibt das Rezept in die DB."""
+    # Bild verarbeiten - leer wenn keines hochgeladen wurde
+    bild_filename = ""
+    if bild and bild.filename:
+        bild_filename = save_recipe_image(bild)
+
     neues_rezept = Rezept(
         title=title,
         portionen=portionen,
         zubereitungszeit=zubereitungszeit,
         theme=theme,
         is_fav=False,
-        bild="",
+        bild=bild_filename,
     )
 
-    # Zutaten zusammenbauen: zip() kombiniert die drei parallelen Listen
-    # zu Tupeln (menge, einheit, name), enumerate() liefert dazu den Index.
-    for i, (menge, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
+    # Zutaten zusammenbauen: zip() kombiniert die parallelen Listen
+    # zu Tupeln (menge, einheit, name, notiz), enumerate() liefert dazu den Index.
+    for i, (menge, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
         if not name.strip():
             continue  # leere Zeilen aus dem Form überspringen
         einheit = Einheit(einheit_str)  # String aus Form -> Enum-Wert
-        zutat = Zutat(name=name, menge=menge, einheit=einheit, position=i)
+        # notiz.strip() or None: leere Strings als NULL in DB für Konsistenz
+        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
         neues_rezept.zutaten.append(zutat)
 
-    # Schritte analog zusammenbauen
+    # Schritte zusammenbauen
     for i, text in enumerate(schritt_text):
         if not text.strip():
             continue
         schritt = Schritt(text=text, position=i)
         neues_rezept.schritte.append(schritt)
+
+    # Kategorien zusammenbauen
+    for kat_name in kategorien:
+        rk = RezeptKategorie(kategorie=kat_name)
+        neues_rezept.kategorien_db.append(rk)
 
     # add() merkt das Objekt für den Insert vor, commit() führt's aus.
     # Dank der relationship-Definitionen werden Zutaten/Schritte automatisch mit-inserted.
@@ -164,7 +179,7 @@ def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
     return templates.TemplateResponse(
-        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES}
+        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES, "kategorien": KATEGORIEN}
     )
 
 
@@ -175,22 +190,33 @@ def rezept_edit_speichern(
     portionen: int = Form(...),
     zubereitungszeit: str = Form(""),
     theme: str = Form("Standard"),
+    bild: UploadFile = File(None),
+    kategorien: List[str] = Form([]),
     zutat_menge: List[float] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
+    zutat_notiz: List[str] = Form([]),
     schritt_text: List[str] = Form([]),
     db: Session = Depends(get_db),
 ):
     """
     Verarbeitet das Edit-Form-Submit.
 
-    Strategie: Replace-All. Alle Zutaten und Schritte werden gelöscht und
-    neu angelegt - statt zu mergen. Trade-off: einfacher Code, aber alte IDs
+    Strategie: Replace-All. Alle Zutaten, Schritte und Kategorien werden gelöscht
+    und neu angelegt - statt zu mergen. Trade-off: einfacher Code, aber alte IDs
     gehen verloren. Für ein Familienprojekt akzeptabel.
+
+    Beim Bild: nur ersetzen wenn ein neues hochgeladen wurde. Sonst bleibt das alte.
     """
     rezept = db.get(Rezept, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+
+    # Neues Bild hochgeladen? Dann altes löschen und neuen Pfad setzen.
+    # Kein Upload? Altes Bild bleibt unverändert.
+    if bild and bild.filename:
+        delete_recipe_image(rezept.bild)
+        rezept.bild = save_recipe_image(bild)
 
     # Haupt-Felder updaten - SQLAlchemy trackt die Änderungen automatisch
     rezept.title = title
@@ -198,17 +224,18 @@ def rezept_edit_speichern(
     rezept.zubereitungszeit = zubereitungszeit
     rezept.theme = theme
 
-    # Alte Zutaten und Schritte raus. Dank cascade="all, delete-orphan"
+    # Alte Zutaten, Schritte und Kategorien raus. Dank cascade="all, delete-orphan"
     # werden die entsprechenden DB-Zeilen beim commit() gelöscht.
     rezept.zutaten.clear()
     rezept.schritte.clear()
+    rezept.kategorien_db.clear()
 
-    # Neue Zutaten anlegen (Logik identisch zum Anlegen)
-    for i, (menge, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
+    # Neue Zutaten anlegen
+    for i, (menge, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
         if not name.strip():
             continue
         einheit = Einheit(einheit_str)
-        zutat = Zutat(name=name, menge=menge, einheit=einheit, position=i)
+        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
         rezept.zutaten.append(zutat)
 
     # Neue Schritte anlegen
@@ -217,6 +244,11 @@ def rezept_edit_speichern(
             continue
         schritt = Schritt(text=text, position=i)
         rezept.schritte.append(schritt)
+
+    # Neue Kategorien anlegen
+    for kat_name in kategorien:
+        rk = RezeptKategorie(kategorie=kat_name)
+        rezept.kategorien_db.append(rk)
 
     db.commit()
     return RedirectResponse(url=f"/rezepte/{rezept_id}", status_code=303)
@@ -231,12 +263,16 @@ def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
     """
     Löscht ein Rezept inkl. aller zugehörigen Zutaten/Schritte/Kategorie-Zuordnungen.
 
-    Die abhängigen Datensätze werden durch ON DELETE CASCADE im DB-Schema
-    automatisch mitgelöscht (siehe schema.sql).
+    Die abhängigen DB-Datensätze werden durch ON DELETE CASCADE im DB-Schema
+    automatisch mitgelöscht. Das Bild aus dem Filesystem muss separat entfernt werden.
     """
     rezept = db.get(Rezept, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+
+    # Bild-Datei aus dem Filesystem entfernen (falls vorhanden)
+    delete_recipe_image(rezept.bild)
+
     db.delete(rezept)
     db.commit()
     return RedirectResponse(url="/", status_code=303)
