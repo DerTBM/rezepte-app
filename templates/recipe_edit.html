@@ -1,130 +1,149 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ rezept.title }} bearbeiten</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
-</head>
-<body>
-    <section class="section">
-        <h1 class="title">Rezept bearbeiten</h1>
+<!-- Form zum Bearbeiten eines bestehenden Rezepts -->
+{% extends "base.html" %}
 
-        <!-- enctype="multipart/form-data" ist Pflicht für File-Upload -->
-        <form method="post" action="/rezepte/{{ rezept.id }}/edit" enctype="multipart/form-data">
+{% block title %}{{ rezept.title }} bearbeiten{% endblock %}
 
-            <div class="field">
-                <label class="label">Titel</label>
-                <div class="control">
-                    <input class="input" type="text" name="title" value="{{ rezept.title }}" required>
-                </div>
-            </div>
+<!-- Aktuelle Theme-Farbe des Rezepts als CSS-Variable auf den Body -->
+{% block body_attrs %} style="--theme-color: {{ aktuelle_theme_farbe }};"{% endblock %}
 
-            <div class="field">
-                <label class="label">Portionen</label>
-                <div class="control">
-                    <input class="input" type="number" name="portionen" value="{{ rezept.portionen }}" min="1" required>
-                </div>
-            </div>
+{% block content %}
+    <!-- Topbar mit Zurück-Link -->
+    <nav class="recipe-topbar">
+        <a href="/rezepte/{{ rezept.id }}" class="topbar-back">← Zurück</a>
+    </nav>
 
-            <div class="field">
-                <label class="label">Zubereitungszeit</label>
-                <div class="control">
-                    <input class="input" type="text" name="zubereitungszeit" value="{{ rezept.zubereitungszeit or '' }}">
-                </div>
-            </div>
+    <!-- Form-Karte: gleicher Look wie die Rezept-Detail-Karte -->
+    <article class="recipe-card">
 
-            <div class="field">
-                <label class="label">Theme</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="theme">
-                            {% for t in themes %}
-                            <option value="{{ t.name }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
+        <header class="recipe-hero">
+            <h1 class="recipe-title">{{ rezept.title }} bearbeiten</h1>
+        </header>
 
-            <div class="field">
-                <label class="label">Bild</label>
-                {% if rezept.bild %}
-                <div class="mb-3">
-                    <img src="/static/img/{{ rezept.bild }}" alt="Aktuelles Bild" style="max-width: 200px; border-radius: 6px;">
-                    <p class="help">Aktuelles Bild. Neues hochladen zum Ersetzen.</p>
-                </div>
-                {% endif %}
-                <div class="control">
-                    <input class="input" type="file" name="bild" accept="image/*">
-                </div>
-            </div>
+        <div class="recipe-body">
+            <form method="post" action="/rezepte/{{ rezept.id }}/edit" enctype="multipart/form-data" class="rezept-form">
 
-            <h2 class="subtitle mt-5">Zutaten</h2>
-            <div id="zutaten-container">
-                {% for zutat in rezept.zutaten %}
-                <div class="field is-grouped mb-2">
-                    <div class="control">
-                        <input class="input" type="text" name="zutat_menge" value="{{ zutat.menge if zutat.menge is not none else '' }}" placeholder="Menge">
-                    </div>
-                    <div class="control">
-                        <div class="select">
-                            <select name="zutat_einheit" required>
-                                {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Schuss", "Bund", "Zehe", "Dose", "Pck.", "etwas", "n. Geschmack"] %}
-                                <option value="{{ einheit }}" {% if zutat.einheit.value == einheit %}selected{% endif %}>{{ einheit }}</option>
-                                {% endfor %}
-                            </select>
+                <!-- Meta-Block -->
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-field form-field-expand">
+                            <label class="form-label">Titel</label>
+                            <input class="form-input" type="text" name="title" value="{{ rezept.title }}" required>
                         </div>
                     </div>
-                    <div class="control is-expanded">
-                        <input class="input" type="text" name="zutat_name" value="{{ zutat.name }}" placeholder="Zutat" required>
-                    </div>
-                    <div class="control is-expanded">
-                        <input class="input" type="text" name="zutat_notiz" value="{{ zutat.notiz or '' }}" placeholder="Notiz (optional)">
-                    </div>
-                    <div class="control">
-                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button type="button" class="button is-light mb-4" onclick="addZutat()">+ Zutat hinzufügen</button>
 
-            <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
-            <div id="schritte-container">
-                {% for schritt in rezept.schritte %}
-                <div class="field is-grouped mb-2">
-                    <div class="control is-expanded">
-                        <input class="input" type="text" name="schritt_text" value="{{ schritt.text }}" placeholder="Schrittbeschreibung" required>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Portionen</label>
+                            <input class="form-input" type="number" name="portionen" value="{{ rezept.portionen }}" min="1" required>
+                        </div>
+                        <div class="form-field form-field-expand">
+                            <label class="form-label">Zubereitungszeit</label>
+                            <input class="form-input" type="text" name="zubereitungszeit" value="{{ rezept.zubereitungszeit or '' }}">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Theme</label>
+                            <div class="form-select-wrapper">
+                                <select class="form-select" name="theme">
+                                    {% for t in themes %}
+                                    <option value="{{ t.name }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="control">
-                        <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
+                </div>
+
+                <!-- Bild-Upload mit aktueller Vorschau -->
+                <div class="form-section">
+                    <label class="form-section-label">Bild</label>
+                    {% if rezept.bild %}
+                    <div class="form-image-preview">
+                        <img src="/static/img/{{ rezept.bild }}" alt="Aktuelles Bild">
+                        <p class="form-help">Aktuelles Bild. Neues hochladen zum Ersetzen.</p>
+                    </div>
+                    {% endif %}
+                    <div class="form-field">
+                        <input class="form-input" type="file" name="bild" accept="image/*">
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-            <button type="button" class="button is-light mb-4" onclick="addSchritt()">+ Schritt hinzufügen</button>
 
-            <div class="field mt-5 is-grouped">
-                <div class="control">
-                    <button type="submit" class="button is-primary">Speichern</button>
+                <!-- Kategorien -->
+                <div class="form-section">
+                    <label class="form-section-label">Kategorien</label>
+                    <div class="kategorien-checkboxes">
+                        {% set aktive_kategorien = rezept.kategorien_db | map(attribute='kategorie') | list %}
+                        {% for kat in kategorien %}
+                        <label class="kategorie-checkbox" style="--kat-color: {{ kat.farbe }};">
+                            <input type="checkbox" name="kategorien" value="{{ kat.name }}" {% if kat.name in aktive_kategorien %}checked{% endif %}>
+                            <span>{{ kat.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="control">
-                    <a href="/rezepte/{{ rezept.id }}" class="button is-light">Abbrechen</a>
-                </div>
-                <div class="control" style="margin-left: auto;">
-                    <button type="button" class="button is-danger" onclick="document.getElementById('delete-form').submit();">Löschen</button>
-                </div>
-            </div>
-        </form>
 
-        <!-- Lösch-Form außerhalb des Edit-Forms - sonst würde der Lösch-Button das Edit-Form submitten -->
-        <form id="delete-form" method="post" action="/rezepte/{{ rezept.id }}/loeschen"
-              onsubmit="return confirm('Rezept wirklich löschen?');"
-              style="display: none;"></form>
+                <!-- Zutaten -->
+                <div class="form-section">
+                    <h2 class="section-headline">Zutaten</h2>
+                    <div id="zutaten-container" class="form-rows-container">
+                        {% for zutat in rezept.zutaten %}
+                        <div class="form-row-card">
+                            <div class="form-field">
+                                <input class="form-input" type="text" name="zutat_menge" value="{{ zutat.menge if zutat.menge is not none else '' }}" placeholder="Menge">
+                            </div>
+                            <div class="form-field">
+                                <div class="form-select-wrapper">
+                                    <select class="form-select" name="zutat_einheit" required>
+                                        {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Schuss", "Bund", "Zehe", "Dose", "Pck.", "etwas", "n. Geschmack"] %}
+                                        <option value="{{ einheit }}" {% if zutat.einheit.value == einheit %}selected{% endif %}>{{ einheit }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-field form-field-expand">
+                                <input class="form-input" type="text" name="zutat_name" value="{{ zutat.name }}" placeholder="Zutat" required>
+                            </div>
+                            <div class="form-field form-field-expand">
+                                <input class="form-input" type="text" name="zutat_notiz" value="{{ zutat.notiz or '' }}" placeholder="Notiz (optional)">
+                            </div>
+                            <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="form-add-button" onclick="addZutat()">+ Zutat hinzufügen</button>
+                </div>
 
-        <script src="/static/js/recipe_form.js"></script>
-    </section>
-</body>
-</html>
+                <!-- Zubereitungsschritte -->
+                <div class="form-section">
+                    <h2 class="section-headline">Zubereitungsschritte</h2>
+                    <div id="schritte-container" class="form-rows-container">
+                        {% for schritt in rezept.schritte %}
+                        <div class="form-row-card">
+                            <div class="form-field form-field-expand">
+                                <input class="form-input" type="text" name="schritt_text" value="{{ schritt.text }}" placeholder="Schrittbeschreibung" required>
+                            </div>
+                            <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="form-add-button" onclick="addSchritt()">+ Schritt hinzufügen</button>
+                </div>
+
+                <!-- Action-Bar (sticky am unteren Rand) -->
+                <div class="form-action-bar">
+                    <a href="/rezepte/{{ rezept.id }}" class="action-button action-button-cancel">Abbrechen</a>
+                    <button type="button" class="action-button action-button-danger" onclick="document.getElementById('delete-form').submit();">Löschen</button>
+                    <button type="submit" class="action-button action-button-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </article>
+
+    <!-- Lösch-Form außerhalb des Edit-Forms (verschachtelte Forms sind nicht erlaubt) -->
+    <form id="delete-form" method="post" action="/rezepte/{{ rezept.id }}/loeschen"
+          onsubmit="return confirm('Rezept wirklich löschen?');"
+          style="display: none;"></form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/recipe_form.js"></script>
+{% endblock %}

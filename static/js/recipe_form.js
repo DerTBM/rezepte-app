@@ -2,8 +2,6 @@
  * JavaScript für die dynamischen Zutat- und Schritt-Zeilen
  * im Rezept-Form (anlegen und bearbeiten).
  *
- * Wird sowohl von recipe_form.html als auch recipe_edit.html eingebunden.
- *
  * Globale Funktionen:
  *   - addZutat():    fügt eine neue leere Zutat-Zeile hinzu
  *   - addSchritt():  fügt eine neue leere Schritt-Zeile hinzu
@@ -14,19 +12,18 @@
 
 /**
  * Fügt eine neue leere Zutat-Zeile zum #zutaten-container hinzu.
- * Eine Zutat-Zeile besteht aus: Menge, Einheit-Dropdown, Name, Notiz, Lösch-Button.
  */
 function addZutat() {
     const container = document.getElementById("zutaten-container");
     const div = document.createElement("div");
-    div.className = "field is-grouped mb-2";
+    div.className = "form-row-card";
     div.innerHTML = `
-        <div class="control">
-            <input class="input" type="text" name="zutat_menge" placeholder="Menge">
+        <div class="form-field">
+            <input class="form-input" type="text" name="zutat_menge" placeholder="Menge">
         </div>
-        <div class="control">
-            <div class="select">
-                <select name="zutat_einheit" required>
+        <div class="form-field">
+            <div class="form-select-wrapper">
+                <select class="form-select" name="zutat_einheit" required>
                     <option value="g">g</option>
                     <option value="kg">kg</option>
                     <option value="ml">ml</option>
@@ -46,15 +43,13 @@ function addZutat() {
                 </select>
             </div>
         </div>
-        <div class="control is-expanded">
-            <input class="input" type="text" name="zutat_name" placeholder="Zutat" required>
+        <div class="form-field form-field-expand">
+            <input class="form-input" type="text" name="zutat_name" placeholder="Zutat" required>
         </div>
-        <div class="control is-expanded">
-            <input class="input" type="text" name="zutat_notiz" placeholder="Notiz (optional)">
+        <div class="form-field form-field-expand">
+            <input class="form-input" type="text" name="zutat_notiz" placeholder="Notiz (optional)">
         </div>
-        <div class="control">
-            <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
-        </div>
+        <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
     `;
     container.appendChild(div);
 }
@@ -66,14 +61,12 @@ function addZutat() {
 function addSchritt() {
     const container = document.getElementById("schritte-container");
     const div = document.createElement("div");
-    div.className = "field is-grouped mb-2";
+    div.className = "form-row-card";
     div.innerHTML = `
-        <div class="control is-expanded">
-            <input class="input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
+        <div class="form-field form-field-expand">
+            <input class="form-input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
         </div>
-        <div class="control">
-            <button type="button" class="button is-danger" onclick="this.closest('.field').remove()">×</button>
-        </div>
+        <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
     `;
     container.appendChild(div);
 }

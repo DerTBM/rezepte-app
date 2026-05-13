@@ -1,56 +1,68 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Neues Rezept</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <link rel="icon" href="/static/favicon.ico" sizes="48x48">
-</head>
-<body>
-    <section class="section">
-        <h1 class="title">Neues Rezept anlegen</h1>
+<!-- Form zum Anlegen eines neuen Rezepts -->
+{% extends "base.html" %}
 
-        <!-- enctype="multipart/form-data" ist Pflicht für File-Upload -->
-        <form method="post" action="/rezepte/neu" enctype="multipart/form-data">
+{% block title %}Neues Rezept{% endblock %}
 
-            <div class="field">
-                <label class="label">Titel</label>
-                <div class="control">
-                    <input class="input" type="text" name="title" required>
-                </div>
-            </div>
+{% block content %}
+    <!-- Topbar mit Zurück-Link -->
+    <nav class="recipe-topbar">
+        <a href="/" class="topbar-back">← Zurück</a>
+    </nav>
 
-            <div class="field">
-                <label class="label">Portionen</label>
-                <div class="control">
-                    <input class="input" type="number" name="portionen" value="2" min="1" required>
-                </div>
-            </div>
+    <!-- Form-Karte: gleicher Look wie die Rezept-Detail-Karte -->
+    <article class="recipe-card">
 
-            <div class="field">
-                <label class="label">Zubereitungszeit</label>
-                <div class="control">
-                    <input class="input" type="text" name="zubereitungszeit" placeholder="z.B. 40 Minuten">
-                </div>
-            </div>
+        <!-- Hero-Banner mit Theme-Farbe (passt sich live an Dropdown-Auswahl an, später) -->
+        <header class="recipe-hero">
+            <h1 class="recipe-title">Neues Rezept</h1>
+        </header>
 
-            <div class="field">
-                <label class="label">Theme</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="theme">
-                            {% for t in themes %}
-                            <option value="{{ t.name }}">{{ t.name }}</option>
-                            {% endfor %}
-                        </select>
+        <div class="recipe-body">
+            <!-- enctype="multipart/form-data" ist Pflicht für File-Upload -->
+            <form method="post" action="/rezepte/neu" enctype="multipart/form-data" class="rezept-form">
+
+                <!-- Meta-Block: Titel, Portionen, Zubereitungszeit, Theme -->
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-field form-field-expand">
+                            <label class="form-label">Titel</label>
+                            <input class="form-input" type="text" name="title" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Portionen</label>
+                            <input class="form-input" type="number" name="portionen" value="2" min="1" required>
+                        </div>
+                        <div class="form-field form-field-expand">
+                            <label class="form-label">Zubereitungszeit</label>
+                            <input class="form-input" type="text" name="zubereitungszeit" placeholder="z.B. 40 Minuten">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Theme</label>
+                            <div class="form-select-wrapper">
+                                <select class="form-select" name="theme">
+                                    {% for t in themes %}
+                                    <option value="{{ t.name }}">{{ t.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Kategorien</label>
-                <div class="control">
+                <!-- Bild-Upload -->
+                <div class="form-section">
+                    <label class="form-section-label">Bild</label>
+                    <div class="form-field">
+                        <input class="form-input" type="file" name="bild" accept="image/*">
+                    </div>
+                </div>
+
+                <!-- Kategorien als Pillen-Checkboxen -->
+                <div class="form-section">
+                    <label class="form-section-label">Kategorien</label>
                     <div class="kategorien-checkboxes">
                         {% for kat in kategorien %}
                         <label class="kategorie-checkbox" style="--kat-color: {{ kat.farbe }};">
@@ -60,40 +72,40 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Bild (optional)</label>
-                <div class="control">
-                    <input class="input" type="file" name="bild" accept="image/*">
+                <!-- Zutaten -->
+                <div class="form-section">
+                    <h2 class="section-headline">Zutaten</h2>
+                    <div id="zutaten-container" class="form-rows-container">
+                        <!-- Wird per JavaScript befüllt -->
+                    </div>
+                    <button type="button" class="form-add-button" onclick="addZutat()">+ Zutat hinzufügen</button>
                 </div>
-            </div>
 
-            <h2 class="subtitle mt-5">Zutaten</h2>
-            <div id="zutaten-container">
-                <!-- Wird per JavaScript befüllt -->
-            </div>
-            <button type="button" class="button is-light mb-4" onclick="addZutat()">+ Zutat hinzufügen</button>
-
-            <h2 class="subtitle mt-5">Zubereitungsschritte</h2>
-            <div id="schritte-container">
-                <!-- Wird per JavaScript befüllt -->
-            </div>
-            <button type="button" class="button is-light mb-4" onclick="addSchritt()">+ Schritt hinzufügen</button>
-
-            <div class="field mt-5">
-                <div class="control">
-                    <button type="submit" class="button is-primary">Speichern</button>
+                <!-- Zubereitungsschritte -->
+                <div class="form-section">
+                    <h2 class="section-headline">Zubereitungsschritte</h2>
+                    <div id="schritte-container" class="form-rows-container">
+                        <!-- Wird per JavaScript befüllt -->
+                    </div>
+                    <button type="button" class="form-add-button" onclick="addSchritt()">+ Schritt hinzufügen</button>
                 </div>
-            </div>
-        </form>
 
-        <script src="static/js/recipe_form.js"></script>
-        <script>
-            // Beim Laden: eine leere Zeile pro Bereich
-            addZutat();
-            addSchritt();
-        </script>
-    </section>
-</body>
-</html>
+                <!-- Action-Bar wird per CSS sticky am unteren Rand fixiert -->
+                <div class="form-action-bar">
+                    <a href="/" class="action-button action-button-cancel">Abbrechen</a>
+                    <button type="submit" class="action-button action-button-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </article>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/recipe_form.js"></script>
+    <script>
+        // Beim Laden: eine leere Zeile pro Bereich
+        addZutat();
+        addSchritt();
+    </script>
+{% endblock %}

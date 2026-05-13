@@ -186,8 +186,15 @@ def rezept_edit_form(rezept_id: int, request: Request, db: Session = Depends(get
     rezept = get_rezept(db, rezept_id)
     if rezept is None:
         raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+    
+    # Theme Farbe für die Kartenoptik der Edit-Seite holen
+    try:
+        aktuelle_theme_farbe = get_theme(rezept.theme).farbe
+    except ValueError:
+        aktuelle_theme_farbe = "#cccccc"
+
     return templates.TemplateResponse(
-        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES, "kategorien": KATEGORIEN}
+        request, "recipe_edit.html", {"rezept": rezept, "themes": THEMES, "kategorien": KATEGORIEN, "aktuelle_theme_farbe": aktuelle_theme_farbe}
     )
 
 
