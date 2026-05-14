@@ -243,3 +243,39 @@
         flex-direction: column;
     }
 }
+
+/* ============================================================
+   FAVORITEN-STERN AUF KACHELN
+
+   Die Basis-Styles für .fav-button / .fav-form stehen in topbar.css.
+   Hier nur die Positionierung: der Stern sitzt oben rechts in der
+   Ecke der Kachel. Dafür braucht die Kachel einen Wrapper mit
+   position: relative.
+   ============================================================ */
+
+/* Wrapper um eine Rezept-Kachel - nötig damit der Stern absolut
+   positioniert werden kann, ohne den Karten-Link zu verschachteln */
+.rezept-card-wrapper {
+    position: relative;
+}
+
+/* Stern-Formular auf einer Kachel - oben rechts in die Ecke gelegt */
+.fav-form-card {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;  /* über dem Karten-Bild */
+}
+
+/* Auf der Kachel kriegt der Stern einen runden, halbtransparenten
+   Hintergrund, damit er auf jedem Bild lesbar bleibt */
+.fav-form-card .fav-button {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

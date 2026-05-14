@@ -319,6 +319,38 @@ def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url="/", status_code=303)
 
+# ============================================================
+# FAVORIT UMSCHALTEN
+# ============================================================
+
+@app.post("/rezepte/{rezept_id}/favorit")
+def rezept_favorit_toggle(
+    rezept_id: int,
+    redirect_to: str = Form("/"),
+    db: Session = Depends(get_db),
+):
+    """
+    Schaltet den Favoriten-Status eines Rezepts um (True <-> False).
+
+    redirect_to bestimmt, auf welche Seite nach dem Umschalten zurückgeleitet
+    wird - das Formular schickt mit, von wo der Klick kam (Detail-Seite,
+    Landing, Kategorie- oder Such-Seite).
+    """
+    rezept = db.get(Rezept, rezept_id)
+    if rezept is None:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+
+    # Umschalten: aus True wird False, aus False wird True
+    rezept.is_fav = not rezept.is_fav
+    db.commit()
+
+    # Sicherheitscheck: nur interne Pfade als Redirect-Ziel erlauben.
+    # Verhindert, dass ein manipuliertes Formular auf eine fremde Seite umleitet
+    # (sogenannter "Open Redirect").
+    if not redirect_to.startswith("/"):
+        redirect_to = "/"
+
+    return RedirectResponse(url=redirect_to, status_code=303)
 
 # ============================================================
 # KATEGORIE-ÜBERSICHT

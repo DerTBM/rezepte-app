@@ -103,3 +103,45 @@
 .topbar-action-neutral:hover {
     opacity: 0.85;
 }
+
+/* ============================================================
+   FAVORITEN-STERN
+
+   Der Stern-Button kommt in zwei Kontexten vor:
+   - hier in der recipe-topbar (Detail-Seite)
+   - auf den Rezept-Kacheln (Positionierung dort in overview.css)
+   Die Basis-Styles (.fav-form, .fav-button) stehen deshalb hier.
+   ============================================================ */
+
+/* Container für mehrere Aktionen rechts in der Topbar (Stern + Bearbeiten) */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Das Stern-Formular - kein eigener Abstand, fügt sich in die Topbar ein */
+.fav-form {
+    margin: 0;
+}
+
+/* Der Stern-Button selbst */
+.fav-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 0.2rem 0.4rem;
+    color: var(--muted-color);
+    transition: transform 0.15s, color 0.15s;
+}
+
+.fav-button:hover {
+    transform: scale(1.15);
+}
+
+/* Aktiver Favorit: goldgelber, gefüllter Stern */
+.fav-button-active {
+    color: #f6bd60;
+}
