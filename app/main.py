@@ -24,7 +24,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.db_models import Rezept, Zutat, Schritt, RezeptKategorie
 from app.models import Einheit, THEMES, KATEGORIEN, Theme, get_theme, get_kategorie, EINHEITEN_OHNE_MENGE, menge_als_bruch
-from app.crud import get_rezept, get_alle_rezepte, get_rezepte_nach_kategorie, suche_rezepte
+from app.crud import get_rezept, get_alle_rezepte, get_rezepte_nach_kategorie, suche_rezepte, get_favoriten, get_zufalls_rezepte
 from app.file_upload import save_recipe_image, delete_recipe_image
 
 # App-Setup
@@ -57,13 +57,32 @@ def get_db():
 # ============================================================
 
 @app.get("/", response_class=HTMLResponse)
-def landing(request: Request, db: Session = Depends(get_db)):
-    """Startseite: zeigt alle Rezepte plus Kategorie-Auswahl und Suche."""
-    rezepte = get_alle_rezepte(db)
-    return templates.TemplateResponse(
-        request, "landing.html", {"rezepte": rezepte, "kategorien": KATEGORIEN}
-    )
+def landing(request: Request, db: Session = Depends(get_db), nur_favoriten: bool = False):
+    """
+    Startseite: zeigt Rezepte plus Kategorie-Auswahl und Suche.
 
+    Der Query-Parameter ?nur_favoriten=true schaltet die Rezept-Liste
+    auf reine Favoriten-Anzeige um. Ohne den Parameter werden alle Rezepte gezeigt.
+
+    Zusätzlich werden zwei zufällige Rezepte für die "Zufalls-Vorschläge"-
+    Sektion geladen - bei jedem Seitenaufruf neu gewürfelt.
+    """
+    if nur_favoriten:
+        rezepte = get_favoriten(db)
+    else:
+        rezepte = get_alle_rezepte(db)
+
+    zufalls_rezepte = get_zufalls_rezepte(db, 2)
+
+    return templates.TemplateResponse(
+        request, "landing.html",
+        {
+            "rezepte": rezepte,
+            "kategorien": KATEGORIEN,
+            "nur_favoriten": nur_favoriten,
+            "zufalls_rezepte": zufalls_rezepte,
+        }
+    )
 
 # ============================================================
 # REZEPT ANLEGEN (Create)

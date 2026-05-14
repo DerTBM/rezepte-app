@@ -8,7 +8,7 @@ weil sie eng mit der HTTP-Logik (Form-Daten verarbeiten, redirecten) verwoben si
 
 Falls main.py später zu groß wird, kann man die hierher auslagern.
 """
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.db_models import Rezept, RezeptKategorie
@@ -50,4 +50,28 @@ def suche_rezepte(session: Session, suchbegriff: str) -> list[Rezept]:
         select(Rezept)
         .where(Rezept.title.ilike(f"%{suchbegriff}%"))
         .order_by(Rezept.id)
+    ).all()
+
+
+def get_favoriten(session: Session) -> list[Rezept]:
+    """Lädt alle als Favorit markierten Rezepte, sortiert nach ID."""
+    return session.scalars(
+        select(Rezept)
+        .where(Rezept.is_fav == True)
+        .order_by(Rezept.id)
+    ).all()
+
+
+def get_zufalls_rezepte(session: Session, anzahl: int) -> list[Rezept]:
+    """
+    Lädt eine zufällige Auswahl von Rezepten.
+
+    func.rand() ist die SQL-Funktion für Zufallssortierung in MariaDB -
+    die DB würfelt die Reihenfolge, wir nehmen die ersten 'anzahl' davon.
+    Bei weniger Rezepten als 'anzahl' kommen einfach entsprechend weniger zurück.
+    """
+    return session.scalars(
+        select(Rezept)
+        .order_by(func.rand())
+        .limit(anzahl)
     ).all()

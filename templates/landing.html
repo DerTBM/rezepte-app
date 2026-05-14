@@ -1,16 +1,12 @@
 <!-- Landing Page: Übersicht aller Rezepte mit Suchfeld und Kategorien -->
 {% extends "base.html" %}
-
 {% block title %}HaFaReFi - Hadelkosche Familien Rezepte Fibel{% endblock %}
-
 {% block content %}
     <nav class="page-topbar">
         <h1 class="brand-title">Familienrezepte</h1>
         <a href="/rezepte/neu" class="topbar-action-neutral">+ Neues Rezept</a>
     </nav>
-
     <main class="page-content">
-
         <!-- Suchfeld - leitet zur /suche-Route weiter  -->
         <section class="search-section">
             <form action="/suche" method="get" class="search-form">
@@ -19,12 +15,47 @@
             </form>
         </section>
 
+        <!-- Zufalls-Vorschläge - bei jedem Seitenaufruf neu gewürfelt.
+             Nur anzeigen wenn überhaupt Rezepte da sind. -->
+        {% if zufalls_rezepte %}
+        <section class="zufalls-section">
+            <h2 class="page-section-headline">Zufällige Vorschläge</h2>
+            <div class="rezepte-grid">
+                {% for rezept in zufalls_rezepte %}
+                <div class="rezept-card-wrapper">
+                    <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
+                        {% if rezept.bild %}
+                        <div class="rezept-card-image">
+                            <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
+                        </div>
+                        {% else %}
+                        <div class="rezept-card-image rezept-card-image-placeholder">
+                            <span>📋</span>
+                        </div>
+                        {% endif %}
+                        <div class="rezept-card-body">
+                            <h3 class="rezept-card-title">{{ rezept.title }}</h3>
+                            <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
+                        </div>
+                    </a>
+                    <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
+                        <input type="hidden" name="redirect_to" value="/">
+                        <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
+                            {% if rezept.is_fav %}★{% else %}☆{% endif %}
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
         <!-- Kategorien als farbige Karten - Klick führt zur Kategorie-Übersicht -->
         <section class="kategorie-section">
             <h2 class="page-section-headline">Kategorien</h2>
             <div class="kategorie-grid">
                 {% for kat in kategorien %}
-                <!-- Sous Vide wird auf der Landing ausgeblendet, ist aber als Kategorie sonst verfügbar -->
+                    {# Sous Vide wird auf der Landing ausgeblendet, ist aber als Kategorie sonst verfügbar #}
                     {% if kat.name != "Sous Vide" %}
                     <a href="/kategorie/{{ kat.name }}" class="kategorie-card" style="background-color: {{ kat.farbe }};">
                         {{ kat.name }}
@@ -34,9 +65,23 @@
             </div>
         </section>
 
-        <!-- Alle Rezepte als Kachel-Grid -->
+        <!-- Rezept-Liste: alle Rezepte oder nur Favoriten, je nach Filter -->
         <section class="rezepte-section">
-            <h2 class="page-section-headline">Alle Rezepte</h2>
+            <!-- Überschrift + Filter-Umschalter nebeneinander -->
+            <div class="rezepte-header">
+                <h2 class="page-section-headline">
+                    {% if nur_favoriten %}Favoriten{% else %}Alle Rezepte{% endif %}
+                </h2>
+                <!-- Umschalter: führt mit bzw. ohne ?nur_favoriten=true auf die Landing zurück -->
+                <div class="filter-toggle">
+                    {% if nur_favoriten %}
+                    <a href="/" class="filter-toggle-link">Alle anzeigen</a>
+                    {% else %}
+                    <a href="/?nur_favoriten=true" class="filter-toggle-link">Nur Favoriten ★</a>
+                    {% endif %}
+                </div>
+            </div>
+
             {% if rezepte %}
                 <div class="rezepte-grid">
                     {% for rezept in rezepte %}
@@ -47,6 +92,7 @@
                                 <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
                             </div>
                             {% else %}
+                            <!-- Platzhalter wenn kein Bild gesetzt -->
                             <div class="rezept-card-image rezept-card-image-placeholder">
                                 <span>📋</span>
                             </div>
@@ -56,11 +102,9 @@
                                 <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
                             </div>
                         </a>
-                        <!-- Favoriten-Stern, oben rechts auf die Kachel gelegt.
-                            Steht als Geschwister-Element NEBEN dem Karten-Link, nicht darin -
-                            ein <form> in einem <a> wäre ungültiges HTML. -->
+                        <!-- Favoriten-Stern, oben rechts auf die Kachel gelegt. -->
                         <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
-                            <input type="hidden" name="redirect_to" value="/">
+                            <input type="hidden" name="redirect_to" value="{% if nur_favoriten %}/?nur_favoriten=true{% else %}/{% endif %}">
                             <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
                                 {% if rezept.is_fav %}★{% else %}☆{% endif %}
                             </button>
@@ -69,9 +113,13 @@
                     {% endfor %}
                 </div>
             {% else %}
+                <!-- Leerer Zustand - Text je nach Filter -->
+                {% if nur_favoriten %}
+                <p class="empty-state">Noch keine Favoriten markiert.</p>
+                {% else %}
                 <p class="empty-state">Noch keine Rezepte angelegt.</p>
+                {% endif %}
             {% endif %}
         </section>
-
     </main>
 {% endblock %}
