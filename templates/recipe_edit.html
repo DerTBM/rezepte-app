@@ -43,16 +43,18 @@
                         <div class="form-field">
                             <label class="form-label">Theme</label>
                             <div class="form-select-wrapper">
-                                <select class="form-select" name="theme">
+                                <!-- onchange triggert den Live-Theme-Switch.
+                                     data-farbe an jeder Option, damit JavaScript die Farbe kennt. -->
+                                <select class="form-select" name="theme" onchange="wechsleTheme(this)">
                                     {% for t in themes %}
-                                    <option value="{{ t.name }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
+                                    <option value="{{ t.name }}" data-farbe="{{ t.farbe }}" {% if rezept.theme == t.name %}selected{% endif %}>{{ t.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Bild-Upload mit aktueller Vorschau -->
                 <div class="form-section">
                     <label class="form-section-label">Bild</label>
@@ -146,5 +148,11 @@
 {% endblock %}
 
 {% block scripts %}
+    <!-- SortableJS von CDN - macht die Zutaten-/Schritt-Container per Drag sortierbar -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
     <script src="/static/js/recipe_form.js"></script>
+    <script>
+        // Drag-and-Drop für beide Container aktivieren
+        initSortable();
+    </script>
 {% endblock %}

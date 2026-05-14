@@ -105,3 +105,57 @@ function zeigeBildVorschau(input) {
     // Lese-Vorgang starten - triggert am Ende das onload oben
     reader.readAsDataURL(datei);
 }
+
+/**
+ * Wechselt die Theme-Farbe der Seite live, wenn im Theme-Dropdown
+ * eine andere Auswahl getroffen wird.
+ *
+ * Die gesamte Theme-Färbung (Hero-Banner, Section-Headlines, Fokus-Glow)
+ * hängt an der CSS-Variable --theme-color auf dem <body>. Wir müssen also
+ * nur diese eine Variable neu setzen - CSS aktualisiert den Rest von selbst.
+ *
+ * Die Farbe kommt aus dem data-farbe-Attribut der gewählten <option>.
+ *
+ * @param {HTMLSelectElement} select - das Theme-Select-Element
+ */
+function wechsleTheme(select) {
+    // Die aktuell gewählte <option> aus dem Select holen
+    const gewaehlteOption = select.options[select.selectedIndex];
+    // Farbe aus dem data-farbe-Attribut lesen
+    const farbe = gewaehlteOption.dataset.farbe;
+    // CSS-Variable auf dem <body> neu setzen - der Rest passiert via CSS
+    document.body.style.setProperty("--theme-color", farbe);
+}
+
+/**
+ * Aktiviert Drag-and-Drop-Sortierung für die Zutaten- und Schritt-Container.
+ *
+ * Nutzt die SortableJS-Library (per CDN eingebunden). Macht beide Container
+ * sortierbar - Zeilen lassen sich per Maus oder Touch umordnen.
+ *
+ * Am Backend muss nichts geändert werden: der Endpunkt vergibt die position
+ * per enumerate() über die ankommende Reihenfolge, und die Reihenfolge im
+ * abgeschickten Formular entspricht der DOM-Reihenfolge - die SortableJS
+ * beim Ziehen aktualisiert.
+ *
+ * handle: ".form-row-card" bedeutet, die ganze Zeile ist der Anfasser.
+ * animation: 150 gibt eine sanfte 150ms-Verschiebe-Animation.
+ */
+function initSortable() {
+    const zutatenContainer = document.getElementById("zutaten-container");
+    const schritteContainer = document.getElementById("schritte-container");
+
+    // Sortable.create() macht einen Container sortierbar.
+    // Wir prüfen vorher ob der Container existiert - Sicherheit, falls
+    // diese Funktion mal auf einer Seite ohne die Container läuft.
+    if (zutatenContainer) {
+        Sortable.create(zutatenContainer, {
+            animation: 150,
+        });
+    }
+    if (schritteContainer) {
+        Sortable.create(schritteContainer, {
+            animation: 150,
+        });
+    }
+}
