@@ -9,7 +9,6 @@
  * Beide werden über onclick-Handler im HTML aufgerufen.
  */
 
-
 /**
  * Fügt eine neue leere Zutat-Zeile zum #zutaten-container hinzu.
  */
@@ -33,13 +32,14 @@ function addZutat() {
                     <option value="TL">TL</option>
                     <option value="Stk">Stk</option>
                     <option value="Prise">Prise</option>
+                    <option value="Msp.">Msp.</option>
                     <option value="Schuss">Schuss</option>
                     <option value="Bund">Bund</option>
                     <option value="Zehe/n">Zehe/n</option>
                     <option value="Dose">Dose</option>
                     <option value="Pck.">Pck.</option>
                     <option value="etwas">etwas</option>
-                    <option value=" ">n. Geschmack</option>
+                    <option value="...">...</option>
                 </select>
             </div>
         </div>
@@ -53,7 +53,6 @@ function addZutat() {
     `;
     container.appendChild(div);
 }
-
 
 /**
  * Fügt eine neue leere Schritt-Zeile zum #schritte-container hinzu.

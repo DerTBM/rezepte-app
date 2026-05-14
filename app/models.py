@@ -18,22 +18,28 @@ class Einheit(Enum):
     Wird sowohl in Python (Zutat-Klasse) als auch in der DB (zutat.einheit-Spalte)
     verwendet. Bei Änderung hier muss auch das ENUM in schema.sql angepasst werden,
     sonst gibt's einen DataError beim Schreiben in die DB.
+
+    Der Wert "..." steht für "keine Einheit" - die Menge bleibt erlaubt und
+    wird angezeigt, nur das Einheit-Suffix wird in der Anzeige weggelassen.
+    Gedacht für Fälle wie "Saft von 1/4 Orange".
     """
     KILOGRAMM = "kg"
     GRAMM = "g"
     LITER = "l"
     MILLILITER = "ml"
+    CENTILITER = "cl"
     ESSLOEFFEL = "EL"
     TEELOEFFEL = "TL"
     STUECK = "Stk"
     PRISE = "Prise"
+    MESSERSPITZE = "Msp."
     SCHUSS = "Schuss"
     BUND = "Bund"
     ZEHE = "Zehe/n"
     DOSE = "Dose"
     PACKUNG = "Pck."
     ETWAS = "etwas"
-    NACH_GESCHMACK = " "
+    KEINE = "..."
 
 @dataclass
 class Kategorie:
@@ -103,8 +109,10 @@ def get_theme(name: str) -> Theme:
     raise ValueError(f"Theme '{name}' nicht gefunden")
 
 # Einheiten ohne konkrete Menge - bei diesen wird im Form die Mengen-Eingabe
-# ausgeblendet und in der DB als NULL gespeichert.
-EINHEITEN_OHNE_MENGE = {"etwas", " "}
+# ignoriert und in der DB als NULL gespeichert.
+# Hinweis: "..." gehört NICHT hierher - dort ist die Menge ausdrücklich erlaubt,
+# nur die Einheit selbst wird in der Anzeige weggelassen.
+EINHEITEN_OHNE_MENGE = {"etwas"}
 
 
 def menge_als_bruch(wert: float) -> str:

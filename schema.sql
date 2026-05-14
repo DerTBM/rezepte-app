@@ -10,7 +10,6 @@ CREATE TABLE rezept (
     erstellt DATETIME DEFAULT CURRENT_TIMESTAMP,
     aktualisiert DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 -- Zutaten: gehören jeweils zu einem Rezept
 CREATE TABLE zutat (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -18,11 +17,10 @@ CREATE TABLE zutat (
     name VARCHAR(255) NOT NULL,
     notiz VARCHAR(255),
     menge DECIMAL(8,2),
-    einheit ENUM('kg', 'g', 'l', 'ml', 'cl', 'EL', 'TL', 'Stk', 'Prise', 'Schuss', 'Bund', 'Zehe', 'Dose', 'Pck.', 'etwas', 'n. Geschmack') NOT NULL,
+    einheit ENUM('kg', 'g', 'l', 'ml', 'cl', 'EL', 'TL', 'Stk', 'Prise', 'Msp.', 'Schuss', 'Bund', 'Zehe/n', 'Dose', 'Pck.', 'etwas', '...') NOT NULL,
     position INT NOT NULL DEFAULT 0,
     FOREIGN KEY (rezept_id) REFERENCES rezept(id) ON DELETE CASCADE
 );
-
 -- Schritte: gehören jeweils zu einem Rezept, mit Reihenfolge
 CREATE TABLE schritt (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +29,6 @@ CREATE TABLE schritt (
     text TEXT NOT NULL,
     FOREIGN KEY (rezept_id) REFERENCES rezept(id) ON DELETE CASCADE
 );
-
 -- Junction Table: Rezept zu Kategorien (n:m), Kategorie als String
 CREATE TABLE rezept_kategorie (
     rezept_id INT NOT NULL,

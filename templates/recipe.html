@@ -1,38 +1,35 @@
 <!-- Detail-Seite eines einzelnen Rezepts mit Theme-Farben -->
 {% extends "base.html" %}
-
 {% block title %}{{ rezept.title }}{% endblock %}
-
 <!-- Theme-Farbe als CSS-Variable auf den Body setzen - alle Theme-bezogenen Styles greifen darauf zu -->
 {% block body_attrs %} style="--theme-color: {{ theme.farbe }};"{% endblock %}
-
 {% block content %}
     <!-- Topbar über der Karte: Zurück links, Bearbeiten rechts -->
     <nav class="recipe-topbar">
         <a href="/" class="topbar-back">← Zurück</a>
         <a href="/rezepte/{{ rezept.id }}/edit" class="topbar-action">Bearbeiten</a>
     </nav>
-
     <!-- Die eigentliche Rezept-Karte mit Schatten -->
     <article class="recipe-card">
-
         <!-- Hero-Banner mit Theme-Farbe und Titel -->
         <header class="recipe-hero">
             <h1 class="recipe-title">{{ rezept.title }}</h1>
         </header>
-
         <div class="recipe-body">
-
             <!-- Haupt-Grid: Zutaten links, Bild + Meta + Tags rechts -->
             <div class="recipe-main-grid">
-
                 <div class="zutaten-spalte">
                     <h2 class="section-headline">Zutaten</h2>
                     <ul class="zutaten-list">
                         {% for zutat in rezept.zutaten %}
                         <li>
-                            <!-- Bei frei-Einheiten (etwas, n. Geschmack): Menge auslassen -->
-                            {% if zutat.menge is not none %}
+                            <!-- Anzeige der Mengenangabe, drei Fälle:
+                                 - Einheit "..." (keine Einheit): nur die Menge zeigen, ohne Einheit-Suffix
+                                 - frei-Einheit ohne Menge (etwas): nur die Einheit zeigen
+                                 - Normalfall: Menge + Einheit -->
+                            {% if zutat.einheit.value == "..." %}
+                            <span class="zutaten-menge">{{ zutat.menge|bruch }}</span>
+                            {% elif zutat.menge is not none %}
                             <span class="zutaten-menge">{{ zutat.menge|bruch }} {{ zutat.einheit.value }}</span>
                             {% else %}
                             <span class="zutaten-menge">{{ zutat.einheit.value }}</span>
@@ -42,7 +39,6 @@
                         {% endfor %}
                     </ul>
                 </div>
-
                 <div class="bild-spalte">
                     {% if rezept.bild %}
                     <figure class="recipe-image">
@@ -60,7 +56,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Zubereitungsschritte in voller Breite unter Zutaten + Bild -->
             <div class="zubereitung-block">
                 <h2 class="section-headline">Zubereitung</h2>

@@ -93,7 +93,7 @@
                             <div class="form-field">
                                 <div class="form-select-wrapper">
                                     <select class="form-select" name="zutat_einheit" required>
-                                        {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Schuss", "Bund", "Zehe/n", "Dose", "Pck.", "etwas", " "] %}
+                                        {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Msp.", "Schuss", "Bund", "Zehe/n", "Dose", "Pck.", "etwas", "..."] %}
                                         <option value="{{ einheit }}" {% if zutat.einheit.value == einheit %}selected{% endif %}>{{ einheit }}</option>
                                         {% endfor %}
                                     </select>
