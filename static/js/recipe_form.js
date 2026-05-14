@@ -35,11 +35,11 @@ function addZutat() {
                     <option value="Prise">Prise</option>
                     <option value="Schuss">Schuss</option>
                     <option value="Bund">Bund</option>
-                    <option value="Zehe">Zehe</option>
+                    <option value="Zehe/n">Zehe/n</option>
                     <option value="Dose">Dose</option>
                     <option value="Pck.">Pck.</option>
                     <option value="etwas">etwas</option>
-                    <option value="n. Geschmack">n. Geschmack</option>
+                    <option value=" ">n. Geschmack</option>
                 </select>
             </div>
         </div>

@@ -1,0 +1,42 @@
+/* ============================================================
+   base.css - Globale Defaults
+
+   Enthält:
+   - body und Typografie-Grundlagen
+   - Layout-Container (.page-content)
+
+   Wird von style.css als erstes Modul importiert.
+   ============================================================ */
+
+
+/* ============================================================
+   GLOBALE DEFAULTS
+   ============================================================ */
+
+body {
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    padding-bottom: 3rem;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-color);
+}
+
+
+/* ============================================================
+   LAYOUT-CONTAINER
+
+   .page-content nutzt max-width: 1100px - der Inhalt wird
+   auf großen Bildschirmen zentriert und nicht zu breit gestreckt.
+   ============================================================ */
+
+/* Container für Übersichts-Seiten (Landing, Kategorie, Suche) */
+.page-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 2rem 4rem;
+}

@@ -29,11 +29,11 @@ class Einheit(Enum):
     PRISE = "Prise"
     SCHUSS = "Schuss"
     BUND = "Bund"
-    ZEHE = "Zehe"
+    ZEHE = "Zehe/n"
     DOSE = "Dose"
     PACKUNG = "Pck."
     ETWAS = "etwas"
-    NACH_GESCHMACK = "n. Geschmack"
+    NACH_GESCHMACK = " "
 
 @dataclass
 class Kategorie:
@@ -68,7 +68,7 @@ KATEGORIEN = [
     Kategorie(name="Sous Vide", farbe="#dad7cd"),
 ]
 
-# Feste Liste aller verfügbaren Themes.C
+# Feste Liste aller verfügbaren Themes.
 # 'Standard' ist der Default für neue Rezepte ohne spezifisches Theme.
 THEMES = [
     Theme(name="Standard", farbe="#001524"),
@@ -104,7 +104,7 @@ def get_theme(name: str) -> Theme:
 
 # Einheiten ohne konkrete Menge - bei diesen wird im Form die Mengen-Eingabe
 # ausgeblendet und in der DB als NULL gespeichert.
-EINHEITEN_OHNE_MENGE = {"etwas", "n. Geschmack"}
+EINHEITEN_OHNE_MENGE = {"etwas", " "}
 
 
 def menge_als_bruch(wert: float) -> str:

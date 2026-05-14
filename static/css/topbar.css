@@ -1,0 +1,105 @@
+/* ============================================================
+   topbar.css - Topbars
+
+   Zwei Varianten:
+   - .recipe-topbar: über der Rezept-Detail-/Form-Karte,
+     mit Zurück + ggf. Bearbeiten
+   - .page-topbar: auf Landing, mit Brand-Title + "Neues Rezept"
+
+   Plus die Buttons die in den Topbars vorkommen.
+   ============================================================ */
+
+
+/* ============================================================
+   RECIPE-TOPBAR (über Detail- und Form-Karten)
+   ============================================================ */
+
+.recipe-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.topbar-back, .topbar-action {
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    border-radius: 4px;
+    transition: opacity 0.15s;
+}
+
+.topbar-back {
+    color: var(--muted-color);
+}
+
+.topbar-back:hover {
+    color: var(--text-color);
+}
+
+/* Action-Button mit Theme-Farbe (z.B. "Bearbeiten") */
+.topbar-action {
+    background-color: var(--theme-color);
+    color: var(--text-color);
+}
+
+.topbar-action:hover {
+    opacity: 0.85;
+}
+
+/* Variante für Lösch-Aktionen (nicht aktiv genutzt, Lösch-Button ist im Form) */
+.topbar-delete {
+    color: #c0392b;
+    font-size: 0.9rem;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0.9rem;
+    font-family: inherit;
+}
+
+.topbar-delete:hover {
+    color: #922b21;
+}
+
+
+/* ============================================================
+   PAGE-TOPBAR (Übersichts-Seiten)
+   ============================================================ */
+
+.page-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+}
+
+/* Action-Button ohne Theme-Bezug (z.B. "+ Neues Rezept" auf Landing) */
+.topbar-action-neutral {
+    background-color: var(--text-color);
+    color: var(--card-bg);
+    padding: 0.5rem 1.1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: opacity 0.15s;
+}
+
+.topbar-action-neutral:hover {
+    opacity: 0.85;
+}

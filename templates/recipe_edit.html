@@ -93,7 +93,7 @@
                             <div class="form-field">
                                 <div class="form-select-wrapper">
                                     <select class="form-select" name="zutat_einheit" required>
-                                        {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Schuss", "Bund", "Zehe", "Dose", "Pck.", "etwas", "n. Geschmack"] %}
+                                        {% for einheit in ["g", "kg", "ml", "cl", "l", "EL", "TL", "Stk", "Prise", "Schuss", "Bund", "Zehe/n", "Dose", "Pck.", "etwas", " "] %}
                                         <option value="{{ einheit }}" {% if zutat.einheit.value == einheit %}selected{% endif %}>{{ einheit }}</option>
                                         {% endfor %}
                                     </select>
@@ -131,7 +131,7 @@
                 <!-- Action-Bar (sticky am unteren Rand) -->
                 <div class="form-action-bar">
                     <a href="/rezepte/{{ rezept.id }}" class="action-button action-button-cancel">Abbrechen</a>
-                    <button type="button" class="action-button action-button-danger" onclick="document.getElementById('delete-form').submit();">Löschen</button>
+                    <button type="button" class="action-button action-button-danger" onclick="if(confirm('Rezept wirklich löschen?')) document.getElementById('delete-form').submit();">Löschen</button>
                     <button type="submit" class="action-button action-button-primary">Speichern</button>
                 </div>
             </form>
@@ -139,9 +139,7 @@
     </article>
 
     <!-- Lösch-Form außerhalb des Edit-Forms (verschachtelte Forms sind nicht erlaubt) -->
-    <form id="delete-form" method="post" action="/rezepte/{{ rezept.id }}/loeschen"
-          onsubmit="return confirm('Rezept wirklich löschen?');"
-          style="display: none;"></form>
+    <form id="delete-form" method="post" action="/rezepte/{{ rezept.id }}/loeschen" style="display: none;"></form>
 {% endblock %}
 
 {% block scripts %}
