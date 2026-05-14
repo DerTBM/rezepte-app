@@ -37,29 +37,21 @@ rezepte-app/
 │   ├── kategorie.html      Rezepte einer Kategorie
 │   └── suche.html          Such-Ergebnisseite
 ├── static/css              Statische Assets
-│   ├── style.css          → nur noch @import-Anweisungen + :root-Variablen
-│   ├── base.css           → body, Typografie, globale Defaults
-│   ├── topbar.css         → recipe-topbar, page-topbar, alle Topbar-Varianten
-│   ├── recipe-detail.css  → recipe-card, hero, zutaten-list, schritte-list, tags
-│   ├── overview.css       → landing, kategorie-grid, rezept-grid, suche, kategorie-hero, empty-state
-│   └── form.css           → alles zum Rezept-Form (form-section, form-input, action-bar, kategorie-checkboxes)
+│   ├── style.css           nur noch @import-Anweisungen + :root-Variablen
+│   ├── base.css            body, Typografie, globale Defaults
+│   ├── topbar.css          recipe-topbar, page-topbar, alle Topbar-Varianten
+│   ├── recipe-detail.css   recipe-card, hero, zutaten-list, schritte-list, tags
+│   ├── overview.css        landing, kategorie-grid, rezept-grid, suche, kategorie-hero, empty-state
+│   └── form.css            alles zum Rezept-Form (form-section, form-input, action-bar, kategorie-checkboxes)
 ├── static/js/              Skripte
 │   ├── recipe_form.js      JavaScript für dynamische Form-Zeilen
-│   ├── img/                Hochgeladene Rezept-Bilder
+├── img/                    Hochgeladene Rezept-Bilder
 │   └── favicon.ico
 ├── schema.sql              DB-Schema (CREATE TABLE Statements)
 ├── requirements.txt        Python-Abhängigkeiten
 ├── .env.example            Vorlage für .env (DB-Verbindung)
 └── README.md               Diese Datei
 ```
-
-static/css/
-├── style.css          → nur noch @import-Anweisungen + :root-Variablen
-├── base.css           → body, Typografie, globale Defaults
-├── topbar.css         → recipe-topbar, page-topbar, alle Topbar-Varianten
-├── recipe-detail.css  → recipe-card, hero, zutaten-list, schritte-list, tags
-├── overview.css       → landing, kategorie-grid, rezept-grid, suche, kategorie-hero, empty-state
-└── form.css           → alles zum Rezept-Form (form-section, form-input, action-bar, kategorie-checkboxes)
 
 ## Setup auf einem neuen Rechner
 1. **Repository klonen**
