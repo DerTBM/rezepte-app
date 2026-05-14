@@ -107,9 +107,6 @@
                             <div class="form-field form-field-expand">
                                 <input class="form-input" type="text" name="zutat_name" value="{{ zutat.name }}" placeholder="Zutat" required>
                             </div>
-                            <div class="form-field form-field-expand">
-                                <input class="form-input" type="text" name="zutat_notiz" value="{{ zutat.notiz or '' }}" placeholder="Notiz (optional)">
-                            </div>
                             <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
                         </div>
                         {% endfor %}

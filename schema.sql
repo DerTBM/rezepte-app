@@ -1,3 +1,4 @@
+-- Schema wie die Datenbank aufgebaut ist
 -- Rezept-Tabelle: die Hauptdaten eines Rezepts
 CREATE TABLE rezept (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -15,7 +16,6 @@ CREATE TABLE zutat (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rezept_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    notiz VARCHAR(255),
     menge DECIMAL(8,2),
     einheit ENUM('kg', 'g', 'l', 'ml', 'cl', 'EL', 'TL', 'Stk', 'Prise', 'Msp.', 'Schuss', 'Bund', 'Zehe/n', 'Dose', 'Pck.', 'etwas', '...') NOT NULL,
     position INT NOT NULL DEFAULT 0,
@@ -29,7 +29,7 @@ CREATE TABLE schritt (
     text TEXT NOT NULL,
     FOREIGN KEY (rezept_id) REFERENCES rezept(id) ON DELETE CASCADE
 );
--- Junction Table: Rezept zu Kategorien (n:m), Kategorie als String
+-- Junction Table: Rezept zu Kategorien (n:m-Beziehung), Kategorie als String
 CREATE TABLE rezept_kategorie (
     rezept_id INT NOT NULL,
     kategorie VARCHAR(50) NOT NULL,

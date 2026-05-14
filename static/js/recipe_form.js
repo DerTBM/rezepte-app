@@ -3,10 +3,11 @@
  * im Rezept-Form (anlegen und bearbeiten).
  *
  * Globale Funktionen:
- *   - addZutat():    fügt eine neue leere Zutat-Zeile hinzu
- *   - addSchritt():  fügt eine neue leere Schritt-Zeile hinzu
- *
- * Beide werden über onclick-Handler im HTML aufgerufen.
+ *   - addZutat():        fügt eine neue leere Zutat-Zeile hinzu
+ *   - addSchritt():      fügt eine neue leere Schritt-Zeile hinzu
+ *   - zeigeBildVorschau: zeigt eine Vorschau des gewählten Bildes
+ *   - wechsleTheme:      ändert die Theme-Farbe live bei Dropdown-Wechsel
+ *   - initSortable:      aktiviert Drag-and-Drop für Zutaten/Schritte
  */
 
 /**
@@ -45,9 +46,6 @@ function addZutat() {
         </div>
         <div class="form-field form-field-expand">
             <input class="form-input" type="text" name="zutat_name" placeholder="Zutat" required>
-        </div>
-        <div class="form-field form-field-expand">
-            <input class="form-input" type="text" name="zutat_notiz" placeholder="Notiz (optional)">
         </div>
         <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
     `;
@@ -138,7 +136,6 @@ function wechsleTheme(select) {
  * abgeschickten Formular entspricht der DOM-Reihenfolge - die SortableJS
  * beim Ziehen aktualisiert.
  *
- * handle: ".form-row-card" bedeutet, die ganze Zeile ist der Anfasser.
  * animation: 150 gibt eine sanfte 150ms-Verschiebe-Animation.
  */
 function initSortable() {

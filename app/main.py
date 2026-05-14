@@ -1,15 +1,14 @@
 """
-FastAPI-Anwendung für die Rezepte-App.
-
-Definiert alle HTTP-Endpunkte, mappt Form-Daten auf DB-Operationen und
-rendert HTML-Templates über Jinja2.
+FastAPI-Anwendung für die Rezepte-App. 
+Definiert alle HTTP-Endpunkte, mappt Form-Daten auf DB-Operationen und rendert HTML-Templates über Jinja2.
 
 Endpunkt-Struktur:
-- /                          Landing Page mit Suche und Kategorien
+- /                         Landing Page mit Suche und Kategorien
 - /rezepte/neu              Form zum Anlegen (GET) bzw. Speichern (POST)
 - /rezepte/{id}             Detail-Anzeige eines Rezepts
 - /rezepte/{id}/edit        Form zum Bearbeiten (GET) bzw. Speichern (POST)
 - /rezepte/{id}/loeschen    Löschen (POST)
+- /rezepte/{id}/favorit     Favoriten-Status umschalten (POST)
 - /kategorie/{name}         Übersicht aller Rezepte einer Kategorie
 - /suche?q=...              Suchergebnisse
 """
@@ -39,11 +38,11 @@ templates.env.filters["bruch"] = menge_als_bruch
 
 def get_db():
     """
-    Dependency: stellt eine DB-Session bereit und schließt sie nach dem Request.
+    Dependency: stellt die DB-Session bereit und schließt sie nach dem Request.
 
     FastAPI ruft diese Funktion bei jedem Request mit Depends(get_db) auf.
-    Das yield übergibt die Session an den Endpunkt, das finally schließt sie -
-    egal ob der Endpunkt erfolgreich war oder eine Exception geworfen hat.
+    Das yield übergibt die Session an den Endpunkt, das finally schließt sie.
+    Egal ob der Endpunkt erfolgreich war oder eine Exception geworfen hat.
     """
     db = SessionLocal()
     try:
@@ -84,11 +83,12 @@ def landing(request: Request, db: Session = Depends(get_db), nur_favoriten: bool
         }
     )
 
+
 # ============================================================
 # REZEPT ANLEGEN (Create)
 # ============================================================
 
-# Muss VOR /rezepte/{rezept_id} registriert sein, sonst wird "neu" als ID
+# Muss VOR! /rezepte/{rezept_id} registriert sein, sonst wird "neu" als ID
 # interpretiert und FastAPI versucht es zu einem int zu casten -> Validation-Error.
 @app.get("/rezepte/neu", response_class=HTMLResponse)
 def rezepte_neu_form(request: Request):
@@ -111,7 +111,6 @@ def rezept_neu_speichern(
     zutat_menge: List[str] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
-    zutat_notiz: List[str] = Form([]),
     schritt_text: List[str] = Form([]),
     db: Session = Depends(get_db),
 ):
@@ -131,8 +130,8 @@ def rezept_neu_speichern(
     )
 
     # Zutaten zusammenbauen: zip() kombiniert die parallelen Listen
-    # zu Tupeln (menge, einheit, name, notiz), enumerate() liefert dazu den Index.
-    for i, (menge_str, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
+    # zu Tupeln (menge, einheit, name), enumerate() liefert dazu den Index.
+    for i, (menge_str, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
         if not name.strip():
             continue
         einheit = Einheit(einheit_str)
@@ -141,7 +140,7 @@ def rezept_neu_speichern(
         if einheit.value in EINHEITEN_OHNE_MENGE:
             menge = None
         else:
-            # Komma-zu-Punkt-Konvertierung (Familienmitglieder tippen oft "0,5" statt "0.5")
+            # Komma-zu-Punkt-Konvertierung (Falls "0,5" statt "0.5")
             menge_clean = menge_str.replace(",", ".").strip()
             try:
                 menge = float(menge_clean) if menge_clean else None
@@ -150,7 +149,7 @@ def rezept_neu_speichern(
                 # Statt zu crashen: Menge als None speichern.
                 menge = None
 
-        zutat = Zutat(name=name, notiz=notiz.strip() or None, menge=menge, einheit=einheit, position=i)
+        zutat = Zutat(name=name, menge=menge, einheit=einheit, position=i)
         neues_rezept.zutaten.append(zutat)
 
     # Schritte zusammenbauen
@@ -237,7 +236,6 @@ def rezept_edit_speichern(
     zutat_menge: List[str] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
-    zutat_notiz: List[str] = Form([]),
     schritt_text: List[str] = Form([]),
     db: Session = Depends(get_db),
 ):
@@ -273,7 +271,7 @@ def rezept_edit_speichern(
     rezept.kategorien_db.clear()
 
     # Neue Zutaten anlegen
-    for i, (menge_str, einheit_str, name, notiz) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name, zutat_notiz)):
+    for i, (menge_str, einheit_str, name) in enumerate(zip(zutat_menge, zutat_einheit, zutat_name)):
         if not name.strip():
             continue
         einheit = Einheit(einheit_str)
@@ -282,7 +280,7 @@ def rezept_edit_speichern(
         if einheit.value in EINHEITEN_OHNE_MENGE:
             menge = None
         else:
-            # Komma-zu-Punkt-Konvertierung (Familienmitglieder tippen oft "0,5" statt "0.5")
+            # Komma-zu-Punkt-Konvertierung (Falls "0,5" statt "0.5")
             menge_clean = menge_str.replace(",", ".").strip()
             try:
                 menge = float(menge_clean) if menge_clean else None
@@ -292,7 +290,6 @@ def rezept_edit_speichern(
 
         zutat = Zutat(
             name=name,
-            notiz=notiz.strip() or None,
             menge=menge,
             einheit=einheit,
             position=i,
@@ -338,6 +335,7 @@ def rezept_loeschen(rezept_id: int, db: Session = Depends(get_db)):
     db.commit()
     return RedirectResponse(url="/", status_code=303)
 
+
 # ============================================================
 # FAVORIT UMSCHALTEN
 # ============================================================
@@ -370,6 +368,7 @@ def rezept_favorit_toggle(
         redirect_to = "/"
 
     return RedirectResponse(url=redirect_to, status_code=303)
+
 
 # ============================================================
 # KATEGORIE-ÜBERSICHT
