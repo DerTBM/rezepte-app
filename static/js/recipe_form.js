@@ -69,3 +69,39 @@ function addSchritt() {
     `;
     container.appendChild(div);
 }
+
+/**
+ * Zeigt eine Vorschau des gewählten Bildes, sobald der Nutzer
+ * im Datei-Dialog eine Datei auswählt - noch vor dem Upload.
+ *
+ * Nutzt die FileReader-API: liest die lokal gewählte Datei als
+ * Daten-URL ein und steckt sie direkt ins <img>-Tag. Kein
+ * Server-Roundtrip nötig, alles passiert im Browser.
+ *
+ * @param {HTMLInputElement} input - das file-Input-Element
+ */
+function zeigeBildVorschau(input) {
+    // input.files ist eine Liste - wir nehmen die erste (und einzige) Datei
+    const datei = input.files[0];
+    if (!datei) {
+        return;  // Nutzer hat den Dialog abgebrochen, nichts zu tun
+    }
+
+    const container = document.getElementById("bild-vorschau-container");
+    const vorschauBild = document.getElementById("bild-vorschau");
+    const vorschauText = document.getElementById("bild-vorschau-text");
+
+    // FileReader liest die Datei asynchron ein
+    const reader = new FileReader();
+
+    // onload feuert, sobald die Datei fertig eingelesen ist.
+    // reader.result enthält dann die Datei als Daten-URL (base64).
+    reader.onload = function (event) {
+        vorschauBild.src = event.target.result;
+        vorschauText.textContent = "Vorschau des neuen Bildes. Wird beim Speichern übernommen.";
+        container.style.display = "";  // Container sichtbar machen (falls vorher versteckt)
+    };
+
+    // Lese-Vorgang starten - triggert am Ende das onload oben
+    reader.readAsDataURL(datei);
+}

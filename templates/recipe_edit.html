@@ -52,18 +52,21 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Bild-Upload mit aktueller Vorschau -->
                 <div class="form-section">
                     <label class="form-section-label">Bild</label>
-                    {% if rezept.bild %}
-                    <div class="form-image-preview">
-                        <img src="/static/img/{{ rezept.bild }}" alt="Aktuelles Bild">
-                        <p class="form-help">Aktuelles Bild. Neues hochladen zum Ersetzen.</p>
+                    <!-- Vorschau-Container: zeigt erst das gespeicherte Bild,
+                         nach Datei-Auswahl per JavaScript das neu gewählte -->
+                    <div class="form-image-preview" id="bild-vorschau-container" {% if not rezept.bild %}style="display: none;"{% endif %}>
+                        <img src="{% if rezept.bild %}/static/img/{{ rezept.bild }}{% endif %}" alt="Bild-Vorschau" id="bild-vorschau">
+                        <p class="form-help" id="bild-vorschau-text">
+                            {% if rezept.bild %}Aktuelles Bild. Neues hochladen zum Ersetzen.{% endif %}
+                        </p>
                     </div>
-                    {% endif %}
                     <div class="form-field">
-                        <input class="form-input" type="file" name="bild" accept="image/*">
+                        <!-- onchange ruft die Vorschau-Funktion auf, sobald eine Datei gewählt wird -->
+                        <input class="form-input" type="file" name="bild" accept="image/*" onchange="zeigeBildVorschau(this)">
                     </div>
                 </div>
 
