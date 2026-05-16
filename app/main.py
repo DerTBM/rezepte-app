@@ -18,6 +18,7 @@ from fastapi import FastAPI, Request, Depends, Form, HTTPException, UploadFile, 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import HTTPException as StarletteHTTPException
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
@@ -34,6 +35,15 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Custom Filter für Templates: 0.25 -> "1/4"
 templates.env.filters["bruch"] = menge_als_bruch
+
+@app.exception_handler(404)
+def not_found_handler(request: Request, exc: StarletteHTTPException):
+    """
+    Fängt alle 404-Fehler ab und rendert dann eine HTML-Seite, statt der Standard JSON-Antwort von FastAPI.
+
+    Greift sowohl bei manuell geworfenen HTTPExceptions(404) (z.B. Rezept nicht gefunden) als auch bei URLs die keine Route haben.
+    """
+    return templates.TemplateResponse(request, "404.html", status_code=404)
 
 
 def get_db():

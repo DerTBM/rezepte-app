@@ -1,0 +1,17 @@
+<!-- Fehlerseite für nicht gefundene Inhalte (HTTP 404) -->
+{% extends "base.html" %}
+
+{% block title %}Seite nicht gefunden{% endblock %}
+
+{% block content %}
+    <nav class="recipe-topbar">
+        <a href="/" class="topbar-back">← Zur Startseite</a>
+    </nav>
+
+    <main class="page-content">
+        <div class="empty-state">
+            <h1 class="page-section-headline">Nichts gefunden</h1>
+            <p>Diese Seite oder dieses Rezept gibt es nicht (mehr).</p>
+        </div>
+    </main>
+{% endblock %}

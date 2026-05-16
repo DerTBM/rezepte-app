@@ -26,7 +26,8 @@ if DATABASE_URL is None:
 # Engine ist SQLAlchemys Verbindungsmanager.
 # echo=True schreibt jede SQL-Query ins Terminal - sehr nützlich beim Lernen,
 # in Produktion abschalten (oder Logging anders konfigurieren)
-engine = create_engine(DATABASE_URL, echo=True)
+# echo=False: SQL-Queries werden NICHT mehr ins Terminal geschrieben.
+engine = create_engine(DATABASE_URL, echo=False)
 
 # SessionLocal ist eine Fabrik für DB-Sessions.
 # Eine Session ist eine Arbeitseinheit: Daten abfragen, ändern, dann commit/rollback.
