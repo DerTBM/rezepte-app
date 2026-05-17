@@ -132,17 +132,11 @@
     background-color: var(--card-bg);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
     text-decoration: none;
     color: var(--text-color);
     transition: transform 0.15s, box-shadow 0.15s;
     display: flex;
     flex-direction: column;
-}
-
-.rezept-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .rezept-card-image {
@@ -253,12 +247,6 @@
    position: relative.
    ============================================================ */
 
-/* Wrapper um eine Rezept-Kachel - nötig damit der Stern absolut
-   positioniert werden kann, ohne den Karten-Link zu verschachteln */
-.rezept-card-wrapper {
-    position: relative;
-}
-
 /* Stern-Formular auf einer Kachel - oben rechts in die Ecke gelegt */
 .fav-form-card {
     position: absolute;
@@ -313,4 +301,40 @@
 .filter-toggle-link:hover {
     color: var(--text-color);
     border-color: var(--text-color);
+}
+
+/* ============================================================
+   FARBIGER KACHEL-AKZENT
+
+   Ein gedämpfter, farbiger Schatten in der Theme-Farbe des Rezepts -
+   unten, links und rechts (nicht oben, da sitzt das Bild).
+   Die Farbe kommt per --kachel-theme aus dem Inline-Style des Wrappers.
+
+   color-mix mischt die Theme-Farbe stark mit Transparenz - dadurch
+   wird der Schatten ein "Hauch" der Farbe, kein knalliger Rahmen.
+   ============================================================ */
+
+
+/* Wrapper um eine Rezept-Kachel - nötig damit der Stern absolut
+   positioniert werden kann, ohne den Karten-Link zu verschachteln */
+.rezept-card-wrapper {
+    /* position: relative wird gebraucht, damit der Favoriten-Stern
+       (position: absolute) sich an der Kachel ausrichtet, nicht an der Seite */
+    position: relative;
+    border-radius: 10px;
+    /* Zwei Schatten übereinander:
+       1. der normale neutrale Schatten (Tiefe, wie gehabt)
+       2. ein farbiger Schatten in gedämpfter Theme-Farbe, nach unten versetzt */
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.06),
+        0 6px 16px -4px color-mix(in srgb, var(--kachel-theme, transparent) 35%, transparent);
+    transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.rezept-card-wrapper:hover {
+    /* Beim Hover wird der farbige Schatten einen Hauch kräftiger */
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.1),
+        0 10px 22px -4px color-mix(in srgb, var(--kachel-theme, transparent) 50%, transparent);
+    transform: translateY(-3px);
 }

@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, DECIMAL
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
-from app.models import Einheit  # Enum für die einheit-Spalte
+from app.models import Einheit, get_theme  # Enum für die einheit-Spalte, get_theme für theme_farbe
 
 
 class Rezept(Base):
@@ -29,6 +29,23 @@ class Rezept(Base):
     zutaten = relationship("Zutat", back_populates="rezept", cascade="all, delete-orphan")
     schritte = relationship("Schritt", back_populates="rezept", cascade="all, delete-orphan")
     kategorien_db = relationship("RezeptKategorie", back_populates="rezept", cascade="all, delete-orphan")
+
+    @property
+    def theme_farbe(self) -> str:
+        """
+        Liefert den Farbwert des Themes dieses Rezepts.
+
+        Schlägt den Theme-Namen (self.theme) in der THEMES-Liste nach.
+        Falls das Theme nicht (mehr) existiert - z.B. nach Umbenennung -
+        wird ein neutrales Grau zurückgegeben, statt einen Fehler zu werfen.
+
+        Eine @property verhält sich beim Zugriff wie ein Attribut:
+        im Template einfach {{ rezept.theme_farbe }}, keine Klammern.
+        """
+        try:
+            return get_theme(self.theme).farbe
+        except ValueError:
+            return "#cccccc"
 
 
 class Zutat(Base):

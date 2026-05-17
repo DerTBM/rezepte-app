@@ -3,7 +3,7 @@
    - rezept:      das anzuzeigende Rezept-Objekt
    - redirect_to: wohin der Favoriten-Stern nach dem Klick zurückleiten soll
    Diese werden beim include per "with" übergeben. #}
-<div class="rezept-card-wrapper">
+<div class="rezept-card-wrapper" style="--kachel-theme: {{ rezept.theme_farbe }};">
     <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
         {% if rezept.bild %}
         <div class="rezept-card-image">
