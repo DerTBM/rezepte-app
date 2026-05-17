@@ -30,32 +30,9 @@
                 <!-- Treffer als Kachel-Grid -->
                 <div class="rezepte-grid">
                     {% for rezept in rezepte %}
-                    <div class="rezept-card-wrapper">
-                        <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
-                            {% if rezept.bild %}
-                            <div class="rezept-card-image">
-                                <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
-                            </div>
-                            {% else %}
-                            <div class="rezept-card-image rezept-card-image-placeholder">
-                                <span>📋</span>
-                            </div>
-                            {% endif %}
-                            <div class="rezept-card-body">
-                                <h3 class="rezept-card-title">{{ rezept.title }}</h3>
-                                <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
-                            </div>
-                        </a>
-                        <!-- Favoriten-Stern, oben rechts auf die Kachel gelegt.
-                            Steht als Geschwister-Element NEBEN dem Karten-Link, nicht darin -
-                            ein <form> in einem <a> wäre ungültiges HTML. -->
-                        <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
-                            <input type="hidden" name="redirect_to" value="/suche?q={{ suchbegriff }}">
-                            <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
-                                {% if rezept.is_fav %}★{% else %}☆{% endif %}
-                            </button>
-                        </form>
-                    </div>
+                    {% with redirect_to = "/suche?q=" ~ suchbegriff %}
+                        {% include "_rezept_kachel.html" %}
+                    {% endwith %}
                     {% endfor %}
                 </div>
             {% else %}

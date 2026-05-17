@@ -1,0 +1,31 @@
+{# Wiederverwendbare Rezept-Kachel.
+   Wird per {% include %} eingebunden und erwartet zwei Variablen:
+   - rezept:      das anzuzeigende Rezept-Objekt
+   - redirect_to: wohin der Favoriten-Stern nach dem Klick zurückleiten soll
+   Diese werden beim include per "with" übergeben. #}
+<div class="rezept-card-wrapper">
+    <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
+        {% if rezept.bild %}
+        <div class="rezept-card-image">
+            <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
+        </div>
+        {% else %}
+        {# Platzhalter wenn kein Bild gesetzt #}
+        <div class="rezept-card-image rezept-card-image-placeholder">
+            <span>📋</span>
+        </div>
+        {% endif %}
+        <div class="rezept-card-body">
+            <h3 class="rezept-card-title">{{ rezept.title }}</h3>
+            <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
+        </div>
+    </a>
+    {# Favoriten-Stern, oben rechts auf die Kachel gelegt.
+       redirect_to kommt vom einbindenden Template. #}
+    <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
+        <input type="hidden" name="redirect_to" value="{{ redirect_to }}">
+        <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
+            {% if rezept.is_fav %}★{% else %}☆{% endif %}
+        </button>
+    </form>
+</div>

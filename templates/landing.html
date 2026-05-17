@@ -22,29 +22,9 @@
             <h2 class="page-section-headline">Zufällige Vorschläge</h2>
             <div class="rezepte-grid">
                 {% for rezept in zufalls_rezepte %}
-                <div class="rezept-card-wrapper">
-                    <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
-                        {% if rezept.bild %}
-                        <div class="rezept-card-image">
-                            <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
-                        </div>
-                        {% else %}
-                        <div class="rezept-card-image rezept-card-image-placeholder">
-                            <span>📋</span>
-                        </div>
-                        {% endif %}
-                        <div class="rezept-card-body">
-                            <h3 class="rezept-card-title">{{ rezept.title }}</h3>
-                            <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
-                        </div>
-                    </a>
-                    <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
-                        <input type="hidden" name="redirect_to" value="/">
-                        <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
-                            {% if rezept.is_fav %}★{% else %}☆{% endif %}
-                        </button>
-                    </form>
-                </div>
+                {% with redirect_to = "/" %}
+                    {% include "_rezept_kachel.html" %}
+                {% endwith %}
                 {% endfor %}
             </div>
         </section>
@@ -85,31 +65,9 @@
             {% if rezepte %}
                 <div class="rezepte-grid">
                     {% for rezept in rezepte %}
-                    <div class="rezept-card-wrapper">
-                        <a href="/rezepte/{{ rezept.id }}" class="rezept-card">
-                            {% if rezept.bild %}
-                            <div class="rezept-card-image">
-                                <img src="/static/img/{{ rezept.bild }}" alt="{{ rezept.title }}">
-                            </div>
-                            {% else %}
-                            <!-- Platzhalter wenn kein Bild gesetzt -->
-                            <div class="rezept-card-image rezept-card-image-placeholder">
-                                <span>📋</span>
-                            </div>
-                            {% endif %}
-                            <div class="rezept-card-body">
-                                <h3 class="rezept-card-title">{{ rezept.title }}</h3>
-                                <p class="rezept-card-meta">{{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}</p>
-                            </div>
-                        </a>
-                        <!-- Favoriten-Stern, oben rechts auf die Kachel gelegt. -->
-                        <form method="post" action="/rezepte/{{ rezept.id }}/favorit" class="fav-form fav-form-card">
-                            <input type="hidden" name="redirect_to" value="{% if nur_favoriten %}/?nur_favoriten=true{% else %}/{% endif %}">
-                            <button type="submit" class="fav-button {% if rezept.is_fav %}fav-button-active{% endif %}" title="Favorit">
-                                {% if rezept.is_fav %}★{% else %}☆{% endif %}
-                            </button>
-                        </form>
-                    </div>
+                    {% with redirect_to = "/?nur_favoriten=true" if nur_favoriten else "/" %}
+                        {% include "_rezept_kachel.html" %}
+                    {% endwith %}
                     {% endfor %}
                 </div>
             {% else %}
