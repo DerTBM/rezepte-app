@@ -21,6 +21,16 @@ body {
     padding-bottom: 3rem;
 }
 
+/* html bekommt explizit denselben Hintergrund wie body.
+   Grund: Bulma setzt auf <html> einen eigenen (dunklen) Default-
+   Hintergrund. Ist der Seiteninhalt kuerzer als der Viewport,
+   scheint dieser Bulma-Hintergrund unten durch. Diese Regel
+   ueberschreibt das. (Sauberer waere, Bulma ganz zu entfernen -
+   siehe To-Do.) */
+html {
+    background-color: var(--bg-color);
+}
+
 h1, h2, h3, h4 {
     font-family: 'Playfair Display', serif;
     color: var(--text-color);

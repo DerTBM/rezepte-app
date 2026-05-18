@@ -77,7 +77,7 @@ KATEGORIEN = [
 # Feste Liste aller verfügbaren Themes.
 # 'Standard' ist der Default für neue Rezepte ohne spezifisches Theme.
 THEMES = [
-    Theme(name="Standard", farbe="#001524"),
+    Theme(name="Standard", farbe="#f0eeeb"),
     Theme(name="Abendessen", farbe="#84a59d"),
     Theme(name="Schwein", farbe="#ffcad4"),
     Theme(name="Rind", farbe="#c02f32"),
