@@ -137,6 +137,9 @@
     transition: transform 0.15s, box-shadow 0.15s;
     display: flex;
     flex-direction: column;
+    /* volle Höhe des Wrappers einnehmen - Teil der Höhen-Kette
+       Grid-Zelle -> Wrapper -> Karte */
+    height: 100%;
 }
 
 .rezept-card-image {
@@ -164,6 +167,9 @@
 
 .rezept-card-body {
     padding: 1rem 1.2rem;
+    /* nimmt den übrigen vertikalen Platz, damit kurze und lange
+       Kacheln unten bündig abschließen */
+    flex: 1;
 }
 
 .rezept-card-title {
@@ -325,6 +331,7 @@
     /* Zwei Schatten übereinander:
        1. der normale neutrale Schatten (Tiefe, wie gehabt)
        2. ein farbiger Schatten in gedämpfter Theme-Farbe, nach unten versetzt */
+    height: 100%; /* volle Höhe für Grid-Zeile einnehmen, damit alle Kacheln gleich hoch sind */
     box-shadow:
         0 4px 14px rgba(0, 0, 0, 0.06),
         0 6px 16px -4px color-mix(in srgb, var(--kachel-theme, transparent) 35%, transparent);
