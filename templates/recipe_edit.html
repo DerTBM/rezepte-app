@@ -92,6 +92,7 @@
                     <div id="zutaten-container" class="form-rows-container">
                         {% for zutat in rezept.zutaten %}
                         <div class="form-row-card">
+                            <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
                             <div class="form-field">
                                 <input class="form-input" type="text" name="zutat_menge" value="{{ zutat.menge if zutat.menge is not none else '' }}" placeholder="Menge">
                             </div>
@@ -120,6 +121,7 @@
                     <div id="schritte-container" class="form-rows-container">
                         {% for schritt in rezept.schritte %}
                         <div class="form-row-card">
+                            <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
                             <div class="form-field form-field-expand">
                                 <input class="form-input" type="text" name="schritt_text" value="{{ schritt.text }}" placeholder="Schrittbeschreibung" required>
                             </div>

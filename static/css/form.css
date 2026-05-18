@@ -366,3 +366,38 @@
     background-color: var(--kat-color);
     font-weight: 600;
 }
+
+/* ============================================================
+   DRAG-HANDLE (Greif-Symbol an Zutaten-/Schritt-Zeilen)
+
+   Das Sechs-Punkte-Symbol signalisiert "ziehbar" und ist auch
+   der echte Griff: SortableJS ist per handle-Option so gesetzt,
+   dass NUR dieses Element die Zeile zieht (siehe recipe_form.js).
+   ============================================================ */
+
+.drag-handle {
+    /* grab = der "offene Hand"-Cursor, das Standard-Zeichen für ziehbar */
+    cursor: grab;
+    /* gedämpfte Farbe - das Symbol soll da sein, aber nicht schreien */
+    color: var(--muted-color);
+    font-size: 1.2rem;
+    line-height: 1;
+    /* an den anderen Zeilen-Elementen ausrichten (die haben oben Padding) */
+    padding: 0.6rem 0.2rem;
+    /* nicht schrumpfen, nicht wachsen - feste schmale Spalte */
+    flex-shrink: 0;
+    /* das Symbol selbst nicht markierbar machen (sonst wird's beim
+       Ziehen blau "selektiert") */
+    user-select: none;
+    -webkit-user-select: none;
+    transition: color 0.15s;
+}
+
+.drag-handle:hover {
+    color: var(--text-color);
+}
+
+/* Während aktiv gezogen wird: Cursor auf "geschlossene Hand" */
+.drag-handle:active {
+    cursor: grabbing;
+}

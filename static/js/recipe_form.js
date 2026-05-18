@@ -18,6 +18,7 @@ function addZutat() {
     const div = document.createElement("div");
     div.className = "form-row-card";
     div.innerHTML = `
+        <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
         <div class="form-field">
             <input class="form-input" type="text" name="zutat_menge" placeholder="Menge">
         </div>
@@ -60,6 +61,7 @@ function addSchritt() {
     const div = document.createElement("div");
     div.className = "form-row-card";
     div.innerHTML = `
+        <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
         <div class="form-field form-field-expand">
             <input class="form-input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
         </div>
@@ -148,11 +150,13 @@ function initSortable() {
     if (zutatenContainer) {
         Sortable.create(zutatenContainer, {
             animation: 150,
+            handle: ".drag-handle",
         });
     }
     if (schritteContainer) {
         Sortable.create(schritteContainer, {
             animation: 150,
+            handle: ".drag-handle",
         });
     }
 }
