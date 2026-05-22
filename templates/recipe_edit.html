@@ -123,7 +123,7 @@
                         <div class="form-row-card">
                             <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
                             <div class="form-field form-field-expand">
-                                <input class="form-input" type="text" name="schritt_text" value="{{ schritt.text }}" placeholder="Schrittbeschreibung" required>
+                                <textarea class="form-input" name="schritt_text" rows="3" placeholder="Schrittbeschreibung" required>{{ schritt.text }}</textarea>
                             </div>
                             <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
                         </div>

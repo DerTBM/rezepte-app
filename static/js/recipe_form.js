@@ -63,7 +63,7 @@ function addSchritt() {
     div.innerHTML = `
         <span class="drag-handle" title="Zum Sortieren ziehen">⠿</span>
         <div class="form-field form-field-expand">
-            <input class="form-input" type="text" name="schritt_text" placeholder="Schrittbeschreibung" required>
+            <textarea class="form-input" name="schritt_text" rows="3" placeholder="Schrittbeschreibung" required></textarea>
         </div>
         <button type="button" class="form-remove-button" onclick="this.closest('.form-row-card').remove()">×</button>
     `;
