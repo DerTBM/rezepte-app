@@ -27,7 +27,10 @@ if DATABASE_URL is None:
 # echo=True schreibt jede SQL-Query ins Terminal - sehr nützlich beim Lernen,
 # in Produktion abschalten (oder Logging anders konfigurieren)
 # echo=False: SQL-Queries werden NICHT mehr ins Terminal geschrieben.
-engine = create_engine(DATABASE_URL, echo=False)
+# pool_pre_ping=True: SQLAlchemy prüft vor jedem Request ob die Verbindung
+# noch lebt. Ist sie eingeschlafen (MariaDB-Timeout), wird sie automatisch
+# neu aufgebaut statt einen OperationalError zu werfen.
+engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
 
 # SessionLocal ist eine Fabrik für DB-Sessions.
 # Eine Session ist eine Arbeitseinheit: Daten abfragen, ändern, dann commit/rollback.
