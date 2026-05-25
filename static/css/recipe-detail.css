@@ -252,3 +252,89 @@
         padding: 1rem 1.5rem;
     }
 }
+
+/* ============================================================
+   META-ZEILE + PORTIONEN-STEUERUNG
+   ============================================================ */
+
+.bild-spalte {
+    align-items: center;
+}
+
+/* Eine Zeile: Portionen-Controls + Pills nebeneinander, zentriert */
+.meta-zeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+/* Pill-Stil — Zeit und Kalorien */
+.meta-pill {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    filter: brightness(0.92);
+}
+
+/* Portionen-Controls: Pfeile + Zahl + Label als eine Pill */
+.portionen-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: var(--theme-color);
+    border-radius: 999px;
+    padding: 0.4rem 0.6rem;
+    filter: brightness(0.92);
+}
+
+.portionen-btn {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+.portionen-btn:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* Zahl */
+.portionen-zahl {
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Source Sans 3', sans-serif;
+    min-width: 1rem;
+    text-align: center;
+    color: var(--text-color);
+    line-height: 1;
+}
+
+/* "Portionen"-Label innerhalb der Pill */
+.meta-pill-inline {
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'Source Sans 3', sans-serif;
+    color: var(--text-color);
+}
+
+/* Kategorie-Tags zentriert */
+.kategorie-tags {
+    justify-content: center;
+    margin-top: 0.5rem;
+}
