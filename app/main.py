@@ -116,6 +116,7 @@ def rezept_neu_speichern(
     theme: str = Form("Standard"),
     bild: UploadFile = File(None),
     kategorien: List[str] = Form([]),
+    kalorien: int = Form(None),
     # Die List-Parameter kommen vom Form als mehrere Inputs mit gleichem name:
     # name="zutat_name" mehrfach -> zutat_name = ["Mehl", "Zucker", ...]
     zutat_menge: List[str] = Form([]),
@@ -137,6 +138,7 @@ def rezept_neu_speichern(
         theme=theme,
         is_fav=False,
         bild=bild_filename,
+        kalorien=kalorien,
     )
 
     # Zutaten zusammenbauen: zip() kombiniert die parallelen Listen
@@ -243,6 +245,7 @@ def rezept_edit_speichern(
     theme: str = Form("Standard"),
     bild: UploadFile = File(None),
     kategorien: List[str] = Form([]),
+    kalorien: int = Form(None),
     zutat_menge: List[str] = Form([]),
     zutat_einheit: List[str] = Form([]),
     zutat_name: List[str] = Form([]),
@@ -273,6 +276,7 @@ def rezept_edit_speichern(
     rezept.portionen = portionen
     rezept.zubereitungszeit = zubereitungszeit
     rezept.theme = theme
+    rezept.kalorien = kalorien
 
     # Alte Zutaten, Schritte und Kategorien raus. Dank cascade="all, delete-orphan"
     # werden die entsprechenden DB-Zeilen beim commit() gelöscht.

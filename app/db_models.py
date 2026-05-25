@@ -17,6 +17,7 @@ class Rezept(Base):
     title = Column(String(255), nullable=False)
     portionen = Column(Integer, nullable=False, default=2)
     zubereitungszeit = Column(String(100))
+    kalorien = Column(Integer, nullable=True)
     bild = Column(String(255))
     is_fav = Column(Boolean, nullable=False, default=False)
     # Theme als String gespeichert, Lookup auf Theme-Objekt passiert in models.py

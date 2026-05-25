@@ -57,6 +57,7 @@
                     {% endif %}
                     <p class="recipe-meta">
                         {{ rezept.portionen }} Portionen · {{ rezept.zubereitungszeit }}
+                        {% if rezept.kalorien %} · {{ rezept.kalorien }} kcal{% endif %}
                     </p>
                     <!-- Klickbare Kategorie-Tags - führen zur Kategorie-Seite -->
                     <div class="kategorie-tags">
