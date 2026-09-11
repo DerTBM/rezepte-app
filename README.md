@@ -2,6 +2,8 @@
 Selbst gehostete Web-App zur Sammlung und Verwaltung von Familienrezepten.
 Geplant für den Einsatz auf einem Kühlschrank-Tablet oder im Heimnetzwerk.
 
+Projektthema: Web-App mit Python + "KI-Unterstützung beim Coden, Segen oder Fluch?"
+
 ## Was die App kann
 - Rezepte anlegen, bearbeiten, löschen, anzeigen
 - Strukturierte Zutaten mit Menge, Einheit und optionaler Notiz
