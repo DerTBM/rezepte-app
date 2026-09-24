@@ -1,4 +1,4 @@
-# HaFaReFi — Hadelkosche Familien Rezepte Fibel
+# HaFaReFi - Rezepte-App
 
 Selbst gehostete Web-App zur Verwaltung von Familienrezepten.
 
